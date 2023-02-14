@@ -76,7 +76,7 @@ class MyLoggerAdapter(logging.LoggerAdapter):
         return msg, kwargs
 
     def get_my_logger(self, log_path):
-        handler_input = logging.handlers.RotatingFileHandler(filename=f'{log_path}',
+        handler_input = logging._handlers.RotatingFileHandler(filename=f'{log_path}',
                                                              mode='a',
                                                              maxBytes=10 * 1024 * 1024, backupCount=20)
         fmt = logging.Formatter(

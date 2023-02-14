@@ -15,8 +15,8 @@ def create_pod(filename):
     utils.exec_cmd(cmd)
 
 
-def check_pod():
-    cmd = 'kubectl get pod -o wide'
+def check_pod(pod_name):
+    cmd = f'kubectl get pod -o wide | grep {pod_name}'
     result = utils.exec_cmd(cmd)
     return result
 
@@ -25,3 +25,7 @@ def scanning(pod_name, container_name, scan_directory):
     cmd = f'kubectl exec -it {pod_name} -c {container_name}-- clamscan -r {scan_directory} '
     result = utils.exec_cmd(cmd)
     return result
+
+
+def delete_docker():
+    pass
