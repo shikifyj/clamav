@@ -44,3 +44,4 @@ class AntiVirus(object):
 
     def scan_directory(self):
         pass
+    cc

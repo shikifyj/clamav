@@ -31,7 +31,7 @@ class InputParser(object):
         pass
 
     def volumes_func(self, args):
-        pass
+
 
     def parse(self):  # 调用入口
         args = self.parser.parse_args()
