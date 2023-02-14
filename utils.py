@@ -3,6 +3,8 @@ import socket
 import sys
 import time
 import logging
+import logging.handlers
+import logging.config
 import threading
 import os
 import yaml
@@ -76,7 +78,7 @@ class MyLoggerAdapter(logging.LoggerAdapter):
         return msg, kwargs
 
     def get_my_logger(self, log_path):
-        handler_input = logging._handlers.RotatingFileHandler(filename=f'{log_path}',
+        handler_input = logging.handlers.RotatingFileHandler(filename=f'{log_path}',
                                                              mode='a',
                                                              maxBytes=10 * 1024 * 1024, backupCount=20)
         fmt = logging.Formatter(
@@ -198,4 +200,3 @@ class ConfFile(object):
         except KeyError as e:
             print(f"Missing configuration item {e}.")
             sys.exit()
-cc

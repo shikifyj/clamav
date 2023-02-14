@@ -21,12 +21,12 @@ def check_pod(pod_name):
     return result
 
 
-def scanning(pod_name, container_name, scan_directory):
-    cmd = f'kubectl exec -it {pod_name} -c {container_name}-- clamscan -r {scan_directory} '
+def scanning(pod_name, container_name, scan_directory, log_directory):
+    cmd = f'kubectl exec -it {pod_name} -c {container_name}-- clamscan -r {scan_directory} -l {log_directory}'
     result = utils.exec_cmd(cmd)
     return result
 
 
-def delete_docker():
-    pass
-cc
+def delete_docker(pod_name):
+    cmd = f'kubectl delete pod {pod_name}'
+    utils.exec_cmd(cmd)

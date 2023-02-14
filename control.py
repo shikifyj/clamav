@@ -1,13 +1,70 @@
+import sys
 import action
 import yaml
 import re
+import time
+import os
+
+import utils
+
+logger = utils.Log()
+
+
 class AntiVirus(object):
     def __init__(self):
-        pass
+        self.pod_name_list = []
+        self.container_name_list = []
+        self.scan_directory_list = []
+        self.log_directory = os.getcwd() + '/Anti_virus.log'
 
     def mount_docker_volume(self, claimname_list):
-        pass
+        status_list = []
+        dict_yaml = {'apiVersion': 'v1',
+                     'kind': 'Pod',
+                     'metadata': {'name': 'clamav3'},
+                     'spec': {'containers': [{'name': 'clamav3',
+                                              'image': 'tiredofit/clamav:2.5.3',
+                                              'ports': [{'containerPort': 9009}],
+                                              'volumeMounts': {'name': 'logs-volume',
+                                                               'mountPath': '/mnt'}}],
+                              'volumes': [{'name': 'logs-volume',
+                                           'persistentVolumeClaim': {'claimName': 'antivirus-pvc'}
+                                           }
+                                          ]
+                              }
+                     }
+        for i in range(len(claimname_list)):
+            filename = f'config{i}.yaml'
+            action.create_yaml(filename, dict_yaml)
+            logger.write_to_log("INFO", f"create yaml--config{i}.yaml")
+        for i in range(len(claimname_list)):
+            with open(f'config{i}.yaml') as f:
+                doc = yaml.load(f, Loader=yaml.FullLoader)
+            doc['metadata']['name'] = f'clamb{i}'
+            doc['spec']['containers'][0]['name'] = f'clamb{i}'
+            doc['spec']['containers'][0]['volumeMounts']['mountPath'] = f'/scana{i}'
+            doc['spec']['volumes'][0]['persistentVolumeClaim']['claimName'] = claimname_list[i]
+            with open(f'config{i}.yaml', 'w', encoding='utf-8') as f:
+                yaml.dump(doc, f)
+            print(f'star create pod --clamb{i}')
+            action.create_pod(f'config{i}.yaml')
+            logger.write_to_log("INFO", f"create pod--clamb{i}")
+            result = action.check_pod(f'clamb{i}')
+            time.sleep(2)
+            status = re.findall(r'clamb\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
+            status_list.append(status)
+        for i in range(len(status_list)):
+            if status_list[i] == 'Running':
+                print('Pod is Running')
+                self.pod_name_list.append(f'clamb{i}')
+                self.scan_directory_list(f'/scana{i}')
+                self.container_name_list(f'clamb{i}')
+            else:
+                print('Please check pod')
+                sys.exit()
+
     def mount_docker_file(self, path_list):
+        status_list = []
         dict_yaml = {'apiVersion': 'v1',
                      'kind': 'Pod',
                      'metadata': {'name': 'clamav3'},
@@ -29,19 +86,31 @@ class AntiVirus(object):
         for i in range(len(path_list)):
             with open(f'config{i}.yaml') as f:
                 doc = yaml.load(f, Loader=yaml.FullLoader)
-            doc['metadata']['name'] = f'clamav{i}'
-            doc['spec']['containers'][0]['name'] = f'clamav{i}'
-            doc['spec']['containers'][0]['volumeMounts']['mountPath'] = f'/mnt{i}'
+            doc['metadata']['name'] = f'clamb{i}'
+            doc['spec']['containers'][0]['name'] = f'clamb{i}'
+            doc['spec']['containers'][0]['volumeMounts']['mountPath'] = f'/scana{i}'
             doc['spec']['volumes'][0]['hostPath']['path'] = path_list[i]
             with open(f'config{i}.yaml', 'w', encoding='utf-8') as f:
                 yaml.dump(doc, f)
+            print(f'Start create pod --clamb{i}')
             action.create_pod(f'config{i}.yaml')
-            try:
-                result = action.check_pod(f'clamav{i}')
-                status = re.findall(r'clamav\s*\d*/\d*\s*([a-zA-Z]*)\s',result)
-
-
+            result = action.check_pod(f'clamb{i}')
+            time.sleep(2)
+            status = re.findall(r'clamb\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
+            status_list.append(status)
+        for i in range(len(status_list)):
+            if status_list[i] == 'Running':
+                self.pod_name_list.append(f'clamb{i}')
+                self.scan_directory_list(f'/scana{i}')
+                self.container_name_list(f'clamb{i}')
+                print('Pod is Running')
+            else:
+                print('Please check pod')
 
     def scan_directory(self):
-        pass
-    cc
+        for i in range(len(self.pod_name_list)):
+            print(f'Start scanning the directory--/scana{i} ')
+            action.scanning(pod_name=self.pod_name_list[i],
+                            container_name=self.container_name_list[i],
+                            scan_directory=self.scan_directory_list[i],
+                            log_directory=self.log_directory)
