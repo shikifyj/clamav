@@ -35,7 +35,7 @@ class AntiVirus(object):
             filename = f'config{i}'
             action.create_yaml(filename, dict_yaml)
             print(f'config{i}.yaml is created')
-            logger.write_to_log("INFO", f"Create yaml--config{i}.yaml")
+            logger.write_to_log("INFO", f"Create yaml: config{i}.yaml")
         for i in range(len(claimname_list)):
             with open(f'config{i}.yaml') as f:
                 doc = yaml.load(f, Loader=yaml.FullLoader)
@@ -47,7 +47,7 @@ class AntiVirus(object):
                 yaml.dump(doc, f)
             print(f'Start create pod: clamb{i}')
             action.create_pod(f'config{i}.yaml')
-            logger.write_to_log("INFO", f"Create pod--clamb{i}")
+            logger.write_to_log("INFO", f"Create pod: clamb{i}")
             time.sleep(8)
             print(f'Checking clamb{i} status')
             result = action.check_pod(f'clamb{i}')
