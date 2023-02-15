@@ -34,7 +34,7 @@ class AntiVirus(object):
                               }
                      }
         for i in range(len(claimname_list)):
-            filename = f'config{i}.yaml'
+            filename = f'config{i}'
             action.create_yaml(filename, dict_yaml)
             logger.write_to_log("INFO", f"create yaml--config{i}.yaml")
         for i in range(len(claimname_list)):
@@ -81,7 +81,7 @@ class AntiVirus(object):
                               }
                      }
         for i in range(len(path_list)):
-            filename = f'config{i}.yaml'
+            filename = f'config{i}'
             action.create_yaml(filename, dict_yaml)
         for i in range(len(path_list)):
             with open(f'config{i}.yaml') as f:

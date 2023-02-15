@@ -1,17 +1,17 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: clamb
+  name: clamav3
 spec:
   containers:
-  - name: clamb
-    image: tiredofit/clamav:2.5.3
+  - image: tiredofit/clamav:2.5.3
+    name: clamav3
     ports:
     - containerPort: 9009
     volumeMounts:
-    - name: volumea
-      mountPath: /scana
+      mountPath: /mnt
+      name: logs-volume
   volumes:
-   - name: volumea
-     persistentVolumeClaim:
-       claimName: test-pvc
+  - name: logs-volume
+    persistentVolumeClaim:
+      claimName: antivirus-pvc
