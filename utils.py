@@ -15,17 +15,17 @@ LOG_PATH = os.getcwd() + '/Anti_virus.log'
 def exec_cmd(cmd, timeout=60):
     p = subprocess.Popen(cmd, stderr=subprocess.STDOUT,
                          stdout=subprocess.PIPE, shell=True)
-    t_beginning = time.time()
-    seconds_passed = 0
-    if timeout > 0:
-        while True:
-            if p.poll() is not None:
-                break
-            seconds_passed = time.time() - t_beginning
-            if timeout and seconds_passed > timeout:
-                p.terminate()
-                raise TimeoutError(cmd, timeout)
-            time.sleep(0.1)
+    # t_beginning = time.time()
+    # seconds_passed = 0
+    # if timeout > 0:
+    #     while True:
+    #         if p.poll() is not None:
+    #             break
+    #         seconds_passed = time.time() - t_beginning
+    #         if timeout and seconds_passed > timeout:
+    #             p.terminate()
+    #             raise TimeoutError(cmd, timeout)
+    #         time.sleep(0.1)
     output = p.stdout.read().decode()
     return output
 
