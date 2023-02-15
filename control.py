@@ -112,10 +112,11 @@ class AntiVirus(object):
     def scan_directory(self):
         for i in range(len(self.pod_name_list)):
             print(f'Start scanning the directory--/scana{i} ')
-            action.scanning(pod_name=self.pod_name_list[i],
+            result = action.scanning(pod_name=self.pod_name_list[i],
                             container_name=self.container_name_list[i],
                             scan_directory=self.scan_directory_list[i],
                             log_directory=self.log_directory)
+            logger.write_to_log("INFO", f"scan result{result}")
 
 if __name__ == '__main__':
     anti = AntiVirus()
