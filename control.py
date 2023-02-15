@@ -27,7 +27,7 @@ class AntiVirus(object):
                                               'image': 'tiredofit/clamav:2.5.3',
                                               'ports': [{'containerPort': 9009}],
                                               'volumeMounts': [{'name': 'logs-volume',
-                                                               'mountPath': '/mnt'}]}],
+                                                                'mountPath': '/mnt'}]}],
                               'volumes': [{'name': 'logs-volume',
                                            'persistentVolumeClaim': {'claimName': 'antivirus-pvc'}
                                            }
@@ -52,13 +52,13 @@ class AntiVirus(object):
             logger.write_to_log("INFO", f"create pod--clamb{i}")
             time.sleep(5)
             print('Checking pod status')
-        #     result = action.check_pod(f'clamb{i}')
-        #     status = re.findall(r'clamb\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
-        #     status_list.append(status)
-        # for i in range(len(status_list)):
-        #     if status_list[i] == 'Running':
-        #         print('Pod is Running')
-        #         self.pod_name_list.append(f'clamb{i}')
+            #     result = action.check_pod(f'clamb{i}')
+            #     status = re.findall(r'clamb\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
+            #     status_list.append(status)
+            # for i in range(len(status_list)):
+            #     if status_list[i] == 'Running':
+            #         print('Pod is Running')
+            self.pod_name_list.append(f'clamb{i}')
             self.scan_directory_list.append(f'/scana{i}')
             self.container_name_list.append(f'clamb{i}')
         #     else:
@@ -112,11 +112,15 @@ class AntiVirus(object):
     def scan_directory(self):
         for i in range(len(self.pod_name_list)):
             print(f'Start scanning the directory--/scana{i} ')
+            print(self.pod_name_list[i])
+            print(self.container_name_list[i])
+            print(self.scan_directory_list[i])
             result = action.scanning(pod_name=self.pod_name_list[i],
-                            container_name=self.container_name_list[i],
-                            scan_directory=self.scan_directory_list[i],
-                            log_directory=self.log_directory)
+                                     container_name=self.container_name_list[i],
+                                     scan_directory=self.scan_directory_list[i],
+                                     log_directory=self.log_directory)
             logger.write_to_log("INFO", f"scan result{result}")
+
 
 if __name__ == '__main__':
     anti = AntiVirus()
