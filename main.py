@@ -1,7 +1,6 @@
 # -*- coding:utf-8 -*-
 import argparse
 import sys
-
 import control
 import utils
 
@@ -43,10 +42,12 @@ class InputParser(object):
     def filepath_func(self, args):
         logger.write_to_log("INFO", f"Start to mount '{args.filepath}'")
         control.AntiVirus().mount_docker_file(args.filepath)
+        control.AntiVirus().scan_directory()
 
     def volumes_func(self, args):
         logger.write_to_log("INFO", f"Start to mount '{args.pvc}'")
         control.AntiVirus().mount_docker_file(args.pvc)
+        control.AntiVirus().scan_directory()
 
     def help_usage(self, args):
         if args.version:

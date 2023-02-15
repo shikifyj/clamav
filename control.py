@@ -4,7 +4,6 @@ import yaml
 import re
 import time
 import os
-
 import utils
 
 logger = utils.Log()
@@ -45,7 +44,7 @@ class AntiVirus(object):
             doc['spec']['volumes'][0]['persistentVolumeClaim']['claimName'] = claimname_list[i]
             with open(f'config{i}.yaml', 'w', encoding='utf-8') as f:
                 yaml.dump(doc, f)
-            print(f'star create pod --clamb{i}')
+            print(f'start create pod --clamb{i}')
             action.create_pod(f'config{i}.yaml')
             logger.write_to_log("INFO", f"create pod--clamb{i}")
             time.sleep(5)
@@ -129,8 +128,3 @@ class AntiVirus(object):
             end_date = re.findall(r'End\s*Date:\s*([0-9]+:[0-9]+:[0-9]+\s*[0-9]+:[0-9]+:[0-9]+)', result)
             logger.write_to_log("INFO", f"End Date:{end_date}")
 
-
-if __name__ == '__main__':
-    anti = AntiVirus()
-    anti.mount_docker_volume(['test-pvc'])
-    anti.scan_directory()
