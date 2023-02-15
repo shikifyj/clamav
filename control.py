@@ -50,18 +50,18 @@ class AntiVirus(object):
             logger.write_to_log("INFO", f"create pod--clamb{i}")
             time.sleep(5)
             print('Checking pod status')
-            #     result = action.check_pod(f'clamb{i}')
-            #     status = re.findall(r'clamb\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
-            #     status_list.append(status)
-            # for i in range(len(status_list)):
-            #     if status_list[i] == 'Running':
-            #         print('Pod is Running')
-            self.pod_name_list.append(f'clamb{i}')
-            self.scan_directory_list.append(f'/scana{i}')
-            self.container_name_list.append(f'clamb{i}')
-        #     else:
-        #         print('Please check pod')
-        #         sys.exit()
+            result = action.check_pod(f'clamb{i}')
+            status = re.findall(r'clamb\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
+            status_list.append(status)
+            for i in range(len(status_list)):
+                if status_list[i][0] == 'Running':
+                    print('Pod is Running')
+                    self.pod_name_list.append(f'clamb{i}')
+                    self.scan_directory_list.append(f'/scana{i}')
+                    self.container_name_list.append(f'clamb{i}')
+                else:
+                    print('Please check pod')
+                    sys.exit()
 
     def mount_docker_file(self, path_list):
         status_list = []
@@ -99,7 +99,7 @@ class AntiVirus(object):
             status = re.findall(r'clamb\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
             status_list.append(status)
         for i in range(len(status_list)):
-            if status_list[i] == 'Running':
+            if status_list[i][0] == 'Running':
                 self.pod_name_list.append(f'clamb{i}')
                 self.scan_directory_list.append(f'/scana{i}')
                 self.container_name_list.append(f'clamb{i}')
@@ -110,7 +110,7 @@ class AntiVirus(object):
     def scan_directory(self):
         for i in range(len(self.pod_name_list)):
             print(f'Start scanning the directory--/scana{i} ')
-            logger.write_to_log(f'Start scanning the directory--/scana{i}')
+            logger.write_to_log("INFO", f'Start scanning the directory--/scana{i}')
             result = action.scanning(pod_name=self.pod_name_list[i],
                                      container_name=self.container_name_list[i],
                                      scan_directory=self.scan_directory_list[i])
@@ -128,6 +128,7 @@ class AntiVirus(object):
             logger.write_to_log("INFO", f"Start Date:{start_date}")
             end_date = re.findall(r'End\s*Date:\s*([0-9]+:[0-9]+:[0-9]+\s*[0-9]+:[0-9]+:[0-9]+)', result)
             logger.write_to_log("INFO", f"End Date:{end_date}")
+
 
 if __name__ == '__main__':
     anti = AntiVirus()
