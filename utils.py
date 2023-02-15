@@ -8,11 +8,12 @@ import logging.config
 import threading
 import os
 import yaml
+from datetime import datetime
 
 LOG_PATH = os.getcwd() + '/Anti_virus.log'
 
 
-def exec_cmd(cmd, timeout=60):
+def exec_cmd(cmd, timeout=300):
     p = subprocess.Popen(cmd, stderr=subprocess.STDOUT,
                          stdout=subprocess.PIPE, shell=True)
     # t_beginning = time.time()
@@ -63,10 +64,11 @@ class MyLoggerAdapter(logging.LoggerAdapter):
     """
     extra_dict = {
         "host": "",
-        "domain": "",
+        "hostip": "",
+        "app": "",
         "auditobj": "",
-        "proc": "",
-        "level": "",
+        "severity": "",
+        "sourceip": "",
         "msgdata": ""}
 
     def __init__(self, log_path):
@@ -82,7 +84,7 @@ class MyLoggerAdapter(logging.LoggerAdapter):
                                                              mode='a',
                                                              maxBytes=10 * 1024 * 1024, backupCount=20)
         fmt = logging.Formatter(
-            "%(asctime)s %(host)s %(domain)s %(auditobj)s %(proc)s: %(level)s %(msgdata)s",
+            '%(time)s %(host)s(%(hostip)s) %(app)s - - [auditObj="%(auditobj)s" severity="%(severity)s" sourceIP="%(sourceip)s"] %(msgdata)s',
             datefmt='%b %d %Y %H:%M:%S')
         handler_input.setFormatter(fmt)
         logger = logging.getLogger('vtel_logger')
@@ -99,20 +101,23 @@ class MyLoggerAdapter(logging.LoggerAdapter):
 
 class Log(object):
     """
-    日志格式：
-    asctime：时间; 格式 Feb 01 2023 16:10:33
-    host：hostname 主机名
-    domain：域名 (目前 value 为主机 IP 地址)
-    auditobj: 审计对象 (StorServer, StorServerBMC, Switch, StorDevice, VersaSDS, CosanManager, StorService)
-    proc：进程名
-    level：日志信息等级（EMERG, ALERT, CRIT, ERR, WARNING, NOTICE, INFO, DEBUG)
-    msgdata：具体的message
+    日志格式: <时间> <主机名>(<主机IP地址>) <程序> - - [auditObj=”<审计对象>” severity=”<日志级别>” sourceIP=”<访问端地址>”] <日志信息>
+     - time: 时间; 格式 ISO 8601 format (yyyy-mm-ddThh:mm:ss+-ZONE), e.g.2023-02-15T22:14:15.003Z
+     - host: hostname 主机名
+     - hostip: 主机IP地址
+     - app: 程序名
+     - auditobj: 审计对象 (StorServer, StorServerBMC, Switch, StorDevice, VersaSDS, CosanManager, StorService)
+     - severity: 日志信息等级（EMERG, ALERT, CRIT, ERR, WARNING, NOTICE, INFO, DEBUG)
+     - sourceIP: 访问端地址
+     - msgdata: 具体的 message
     """
     _instance_lock = threading.Lock()
+    # _instance = None
     host = None
-    domain = None
-    proc = None
+    hostip = None
+    app = None
     auditobj = None
+    sourceip = None
     log_path = LOG_PATH
     log_switch = True
     logger = None
@@ -136,22 +141,26 @@ class Log(object):
 
         if not self.host:
             self.host = get_hostname()
-        if not self.domain:
-            self.domain = get_ip()
+        if not self.hostip:
+            self.hostip = get_ip()
         if not self.auditobj:
             self.auditobj = get_auditobj()
-
-        if not self.proc:
-            self.proc = get_proc()
+        if not self.app:
+            self.app = get_proc()
+        if not self.sourceip:
+            self.sourceip = self.hostip
+        self.time = datetime.now().astimezone().isoformat()
 
         logger.debug(
             "",
             extra={
+                'time':self.time,
                 'host': self.host,
-                'domain': self.domain,
+                'hostip': self.hostip,
+                'app': self.app,
                 'auditobj': self.auditobj,
-                'proc': self.proc,
-                'level': level,
+                'severity': level,
+                'sourceip': self.sourceip,
                 'msgdata': msg})
 
 
