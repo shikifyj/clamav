@@ -21,21 +21,11 @@ class InputParser(object):
                                  dest='version',
                                  help='Show current version',
                                  action='store_true')
-        self.parser_filepath = subp.add_parser("filepath", aliases=['f'], help='Directory to scan', type=str
+        self.parser_filepath = subp.add_parser("filepath", aliases=['f'], help='Directory to scan',
                                                )
+        self.parser_filepath.add_argument(dest='filepath', help='')
         self.parser_volumes = subp.add_parser("volumes", aliases=['p'], help='Pvc to scan')
-        # self.parser_filepath = subp.add_parser("filepath", aliases=['f'], help="Directory to scan")
-        # self.parser_filepath.add_argument('-f',
-        #                                '--filepath',
-        #                                dest='filepath',
-        #                                help='file to scan',
-        #                                action='store')
-        # self.parser_volumes = subp.add_parser("volumes", aliases=['v'], help="Pvc to scan")
-        # self.parser_volumes.add_argument('-p',
-        #                                '--pcv',
-        #                                dest='pvc',
-        #                                help='pvc to scan',
-        #                                action='store')
+        self.parser_volumes.add_argument(dest='volumes', help='')
 
         self.parser_filepath.set_defaults(func=self.filepath_func)
         self.parser_volumes.set_defaults(func=self.volumes_func)
