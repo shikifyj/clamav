@@ -16,6 +16,7 @@ class AntiVirus(object):
         self.container_name_list = []
         self.scan_directory_list = []
         self.log_directory = os.getcwd() + '/Anti_virus.log'
+        self.scan_directory()
 
     def mount_docker_volume(self, claimname_list):
         status_list = []
@@ -25,8 +26,8 @@ class AntiVirus(object):
                      'spec': {'containers': [{'name': 'clamav3',
                                               'image': 'tiredofit/clamav:2.5.3',
                                               'ports': [{'containerPort': 9009}],
-                                              'volumeMounts': {'name': 'logs-volume',
-                                                               'mountPath': '/mnt'}}],
+                                              'volumeMounts': [{'name': 'logs-volume',
+                                                               'mountPath': '/mnt'}]}],
                               'volumes': [{'name': 'logs-volume',
                                            'persistentVolumeClaim': {'claimName': 'antivirus-pvc'}
                                            }
@@ -50,18 +51,19 @@ class AntiVirus(object):
             action.create_pod(f'config{i}.yaml')
             logger.write_to_log("INFO", f"create pod--clamb{i}")
             time.sleep(5)
-            result = action.check_pod(f'clamb{i}')
-            status = re.findall(r'clamb\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
-            status_list.append(status)
-        for i in range(len(status_list)):
-            if status_list[i] == 'Running':
-                print('Pod is Running')
-                self.pod_name_list.append(f'clamb{i}')
-                self.scan_directory_list.append(f'/scana{i}')
-                self.container_name_list.append(f'clamb{i}')
-            else:
-                print('Please check pod')
-                sys.exit()
+            print('Checking pod status')
+        #     result = action.check_pod(f'clamb{i}')
+        #     status = re.findall(r'clamb\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
+        #     status_list.append(status)
+        # for i in range(len(status_list)):
+        #     if status_list[i] == 'Running':
+        #         print('Pod is Running')
+        #         self.pod_name_list.append(f'clamb{i}')
+        #         self.scan_directory_list.append(f'/scana{i}')
+        #         self.container_name_list.append(f'clamb{i}')
+        #     else:
+        #         print('Please check pod')
+        #         sys.exit()
 
     def mount_docker_file(self, path_list):
         status_list = []

@@ -9,7 +9,7 @@ spec:
     ports:
     - containerPort: 9009
     volumeMounts:
-      mountPath: /mnt
+    - mountPath: /mnt
       name: logs-volume
   volumes:
   - name: logs-volume
