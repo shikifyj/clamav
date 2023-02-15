@@ -33,13 +33,15 @@ class InputParser(object):
 
     def filepath_func(self, args):
         logger.write_to_log("INFO", f"Start to mount '{args.filepath}'")
-        control.AntiVirus().mount_docker_file(args.filepath)
-        control.AntiVirus().scan_directory()
+        antivirus1 = control.AntiVirus()
+        antivirus1.mount_docker_file(args.filepath)
+        antivirus1.scan_directory()
 
     def volumes_func(self, args):
-        logger.write_to_log("INFO", f"Start to mount '{args.pvc}'")
-        control.AntiVirus().mount_docker_file(args.volumes)
-        control.AntiVirus().scan_directory()
+        logger.write_to_log("INFO", f"Start to mount '{args.volumes}'")
+        antivirus2 = control.AntiVirus()
+        antivirus2.mount_docker_file(args.volumes)
+        antivirus2.scan_directory()
 
     def help_usage(self, args):
         if args.version:
