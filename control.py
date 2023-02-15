@@ -110,14 +110,24 @@ class AntiVirus(object):
     def scan_directory(self):
         for i in range(len(self.pod_name_list)):
             print(f'Start scanning the directory--/scana{i} ')
-            print(self.pod_name_list[i])
-            print(self.container_name_list[i])
-            print(self.scan_directory_list[i])
+            logger.write_to_log(f'Start scanning the directory--/scana{i}')
             result = action.scanning(pod_name=self.pod_name_list[i],
                                      container_name=self.container_name_list[i],
                                      scan_directory=self.scan_directory_list[i])
-            logger.write_to_log("INFO", f"scan result{result}")
-
+            engine_version = re.findall(r'Engine\s*version:\s*([0-9]+.[0-9]+.[0-9])', result)
+            logger.write_to_log("INFO", f"Engine version:{engine_version}")
+            scanned_directories = re.findall(r'Scanned\s*directories:\s*([0-9])', result)
+            logger.write_to_log("INFO", f"Scanned directories:{scanned_directories}")
+            scanned_files = re.findall(r'Scanned\s*files:\s*([0-9])', result)
+            logger.write_to_log("INFO", f"Scanned files:{scanned_files}")
+            infected_files = re.findall(r'Infected\s*files:\s*([0-9])', result)
+            logger.write_to_log("INFO", f"Infected files:{infected_files}")
+            all_time = re.findall(r'Time:\s*([0-9]+.[0-9]+\s*[a-z]+)', result)
+            logger.write_to_log("INFO", f"Time:{all_time}")
+            start_date = re.findall(r'Start\s*Date:\s*([0-9]+:[0-9]+:[0-9]+\s*[0-9]+:[0-9]+:[0-9]+)', result)
+            logger.write_to_log("INFO", f"Start Date:{start_date}")
+            end_date = re.findall(r'End\s*Date:\s*([0-9]+:[0-9]+:[0-9]+\s*[0-9]+:[0-9]+:[0-9]+)', result)
+            logger.write_to_log("INFO", f"End Date:{end_date}")
 
 if __name__ == '__main__':
     anti = AntiVirus()

@@ -22,7 +22,7 @@ def check_pod(pod_name):
 
 
 def scanning(pod_name, container_name, scan_directory):
-    cmd = f'kubectl exec -it {pod_name} -c {container_name}-- clamscan -r {scan_directory}'
+    cmd = f'kubectl exec -it {pod_name} -c {container_name} -- clamscan -r {scan_directory}'
     result = utils.exec_cmd(cmd)
     return result
 
