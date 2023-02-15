@@ -45,11 +45,11 @@ class AntiVirus(object):
             doc['spec']['volumes'][0]['persistentVolumeClaim']['claimName'] = claimname_list[i]
             with open(f'config{i}.yaml', 'w', encoding='utf-8') as f:
                 yaml.dump(doc, f)
-            print(f'start create pod --clamb{i}')
+            print(f'Start create pod: clamb{i}')
             action.create_pod(f'config{i}.yaml')
             logger.write_to_log("INFO", f"Create pod--clamb{i}")
             time.sleep(8)
-            print('Checking pod status')
+            print(f'Checking clamb{i} status')
             result = action.check_pod(f'clamb{i}')
             status = re.findall(r'clamb[0-9]+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
             status_list.append(status)
@@ -94,7 +94,7 @@ class AntiVirus(object):
             doc['spec']['volumes'][0]['hostPath']['path'] = path_list[i]
             with open(f'config{i}.yaml', 'w', encoding='utf-8') as f:
                 yaml.dump(doc, f)
-            print(f'Start create pod --clamb{i}')
+            print(f'Start create pod: clamb{i}')
             action.create_pod(f'config{i}.yaml')
             print(f'clamb{i} is created')
             result = action.check_pod(f'clamb{i}')
@@ -115,7 +115,7 @@ class AntiVirus(object):
     def scan_directory(self):
         for i in range(len(self.pod_name_list)):
             print(f'Start scanning the directory--/scana{i} ')
-            logger.write_to_log("INFO", f'Start scanning the directory--/scana{i}')
+            logger.write_to_log("INFO", f'Start scanning the directory: /scana{i}')
             result = action.scanning(pod_name=self.pod_name_list[i],
                                      container_name=self.container_name_list[i],
                                      scan_directory=self.scan_directory_list[i])
@@ -133,6 +133,7 @@ class AntiVirus(object):
             logger.write_to_log("INFO", f"Start Date:{start_date[0]}")
             end_date = re.findall(r'End\s*Date:\s*([0-9]+:[0-9]+:[0-9]+\s*[0-9]+:[0-9]+:[0-9]+)', result)
             logger.write_to_log("INFO", f"End Date:{end_date[0]}")
+            logger.write_to_log("INFO", 'Scan completely')
         time.sleep(1)
         print('All directories are scanned')
         time.sleep(1)

@@ -32,13 +32,11 @@ class InputParser(object):
         self.parser.set_defaults(func=self.help_usage)
 
     def filepath_func(self, args):
-        logger.write_to_log("INFO", f"Start to mount '{args.filepath}'")
         antivirus1 = control.AntiVirus()
         antivirus1.mount_docker_file(args.filepath)
         antivirus1.scan_directory()
 
     def volumes_func(self, args):
-        logger.write_to_log("INFO", f"Start to mount '{args.volumes}'")
         antivirus2 = control.AntiVirus()
         antivirus2.mount_docker_volume(args.volumes)
         antivirus2.scan_directory()
