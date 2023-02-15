@@ -49,16 +49,16 @@ class AntiVirus(object):
             print(f'star create pod --clamb{i}')
             action.create_pod(f'config{i}.yaml')
             logger.write_to_log("INFO", f"create pod--clamb{i}")
+            time.sleep(5)
             result = action.check_pod(f'clamb{i}')
-            time.sleep(2)
             status = re.findall(r'clamb\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
             status_list.append(status)
         for i in range(len(status_list)):
             if status_list[i] == 'Running':
                 print('Pod is Running')
                 self.pod_name_list.append(f'clamb{i}')
-                self.scan_directory_list(f'/scana{i}')
-                self.container_name_list(f'clamb{i}')
+                self.scan_directory_list.append(f'/scana{i}')
+                self.container_name_list.append(f'clamb{i}')
             else:
                 print('Please check pod')
                 sys.exit()
@@ -101,8 +101,8 @@ class AntiVirus(object):
         for i in range(len(status_list)):
             if status_list[i] == 'Running':
                 self.pod_name_list.append(f'clamb{i}')
-                self.scan_directory_list(f'/scana{i}')
-                self.container_name_list(f'clamb{i}')
+                self.scan_directory_list.append(f'/scana{i}')
+                self.container_name_list.append(f'clamb{i}')
                 print('Pod is Running')
             else:
                 print('Please check pod')
@@ -114,3 +114,7 @@ class AntiVirus(object):
                             container_name=self.container_name_list[i],
                             scan_directory=self.scan_directory_list[i],
                             log_directory=self.log_directory)
+
+if __name__ == '__main__':
+    anti = AntiVirus()
+    anti.mount_docker_volume(['test-pvc'])
