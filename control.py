@@ -34,6 +34,7 @@ class AntiVirus(object):
         for i in range(len(claimname_list)):
             filename = f'config{i}'
             action.create_yaml(filename, dict_yaml)
+            print(f'config{i} is created')
             logger.write_to_log("INFO", f"create yaml--config{i}.yaml")
         for i in range(len(claimname_list)):
             with open(f'config{i}.yaml') as f:
@@ -47,7 +48,7 @@ class AntiVirus(object):
             print(f'start create pod --clamb{i}')
             action.create_pod(f'config{i}.yaml')
             logger.write_to_log("INFO", f"create pod--clamb{i}")
-            time.sleep(5)
+            time.sleep(8)
             print('Checking pod status')
             result = action.check_pod(f'clamb{i}')
             status = re.findall(r'clamb[0-9]+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
@@ -82,6 +83,7 @@ class AntiVirus(object):
         for i in range(len(path_list)):
             filename = f'config{i}'
             action.create_yaml(filename, dict_yaml)
+            print(f'config{i} is created')
         for i in range(len(path_list)):
             with open(f'config{i}.yaml') as f:
                 doc = yaml.load(f, Loader=yaml.FullLoader)
@@ -93,6 +95,7 @@ class AntiVirus(object):
                 yaml.dump(doc, f)
             print(f'Start create pod --clamb{i}')
             action.create_pod(f'config{i}.yaml')
+            print(f'clamb{i} is created')
             result = action.check_pod(f'clamb{i}')
             time.sleep(2)
             status = re.findall(r'clamb[0-9]+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
@@ -114,19 +117,19 @@ class AntiVirus(object):
                                      container_name=self.container_name_list[i],
                                      scan_directory=self.scan_directory_list[i])
             engine_version = re.findall(r'Engine\s*version:\s*([0-9]+.[0-9]+.[0-9])', result)
-            logger.write_to_log("INFO", f"Engine version:{engine_version}")
+            logger.write_to_log("INFO", f"Engine version:{engine_version[0]}")
             scanned_directories = re.findall(r'Scanned\s*directories:\s*([0-9])', result)
-            logger.write_to_log("INFO", f"Scanned directories:{scanned_directories}")
+            logger.write_to_log("INFO", f"Scanned directories:{scanned_directories[0]}")
             scanned_files = re.findall(r'Scanned\s*files:\s*([0-9])', result)
-            logger.write_to_log("INFO", f"Scanned files:{scanned_files}")
+            logger.write_to_log("INFO", f"Scanned files:{scanned_files[0]}")
             infected_files = re.findall(r'Infected\s*files:\s*([0-9])', result)
-            logger.write_to_log("INFO", f"Infected files:{infected_files}")
+            logger.write_to_log("INFO", f"Infected files:{infected_files[0]}")
             all_time = re.findall(r'Time:\s*([0-9]+.[0-9]+\s*[a-z]+)', result)
-            logger.write_to_log("INFO", f"Time:{all_time}")
+            logger.write_to_log("INFO", f"Time:{all_time[0]}")
             start_date = re.findall(r'Start\s*Date:\s*([0-9]+:[0-9]+:[0-9]+\s*[0-9]+:[0-9]+:[0-9]+)', result)
-            logger.write_to_log("INFO", f"Start Date:{start_date}")
+            logger.write_to_log("INFO", f"Start Date:{start_date[0]}")
             end_date = re.findall(r'End\s*Date:\s*([0-9]+:[0-9]+:[0-9]+\s*[0-9]+:[0-9]+:[0-9]+)', result)
-            logger.write_to_log("INFO", f"End Date:{end_date}")
+            logger.write_to_log("INFO", f"End Date:{end_date[0]}")
 
 
 if __name__ == '__main__':
