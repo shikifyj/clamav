@@ -23,9 +23,9 @@ class InputParser(object):
                                  action='store_true')
         self.parser_filepath = subp.add_parser("filepath", aliases=['f'], help='Directory to scan',
                                                )
-        self.parser_filepath.add_argument(dest='filepath', help='')
+        self.parser_filepath.add_argument(dest='filepath', help='', nargs='+')
         self.parser_volumes = subp.add_parser("volumes", aliases=['p'], help='Pvc to scan')
-        self.parser_volumes.add_argument(dest='volumes', help='')
+        self.parser_volumes.add_argument(dest='volumes', help='', nargs='+')
 
         self.parser_filepath.set_defaults(func=self.filepath_func)
         self.parser_volumes.set_defaults(func=self.volumes_func)
