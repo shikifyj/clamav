@@ -110,6 +110,7 @@ class AntiVirus(object):
             else:
                 action.delete_docker(f'clamb{i}')
                 print(f'Please check clamb{i} status')
+                logger.write_to_log('ERR', f'The state of the clamb{i} is wrong')
                 sys.exit()
 
     def scan_directory(self):
