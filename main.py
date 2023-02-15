@@ -40,7 +40,7 @@ class InputParser(object):
     def volumes_func(self, args):
         logger.write_to_log("INFO", f"Start to mount '{args.volumes}'")
         antivirus2 = control.AntiVirus()
-        antivirus2.mount_docker_file(args.volumes)
+        antivirus2.mount_docker_volume(args.volumes)
         antivirus2.scan_directory()
 
     def help_usage(self, args):
