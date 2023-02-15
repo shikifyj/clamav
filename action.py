@@ -5,8 +5,6 @@ YAML_PATH = os.getcwd()
 
 
 def create_yaml(filename, yaml_dict):
-    cmd = f'touch {YAML_PATH}/{filename}'
-    utils.exec_cmd(cmd)
     utils.ConfFile(file_path=f'{YAML_PATH}/{filename}.yaml').update_yaml(yaml_dict)
 
 

@@ -34,8 +34,8 @@ class AntiVirus(object):
         for i in range(len(claimname_list)):
             filename = f'config{i}'
             action.create_yaml(filename, dict_yaml)
-            print(f'config{i} is created')
-            logger.write_to_log("INFO", f"create yaml--config{i}.yaml")
+            print(f'config{i}.yaml is created')
+            logger.write_to_log("INFO", f"Create yaml--config{i}.yaml")
         for i in range(len(claimname_list)):
             with open(f'config{i}.yaml') as f:
                 doc = yaml.load(f, Loader=yaml.FullLoader)
@@ -47,7 +47,7 @@ class AntiVirus(object):
                 yaml.dump(doc, f)
             print(f'start create pod --clamb{i}')
             action.create_pod(f'config{i}.yaml')
-            logger.write_to_log("INFO", f"create pod--clamb{i}")
+            logger.write_to_log("INFO", f"Create pod--clamb{i}")
             time.sleep(8)
             print('Checking pod status')
             result = action.check_pod(f'clamb{i}')
@@ -55,12 +55,13 @@ class AntiVirus(object):
             status_list.append(status)
         for i in range(len(status_list)):
             if status_list[i][0] == 'Running':
-                print('Pod is Running')
+                print(f'clamb{i} is Running')
                 self.pod_name_list.append(f'clamb{i}')
                 self.scan_directory_list.append(f'/scana{i}')
                 self.container_name_list.append(f'clamb{i}')
             else:
-                print('Please check pod')
+                action.delete_docker(f'clamb{i}')
+                print(f'Please check clamb{i} status')
                 sys.exit()
 
     def mount_docker_file(self, path_list):
@@ -102,12 +103,14 @@ class AntiVirus(object):
             status_list.append(status)
         for i in range(len(status_list)):
             if status_list[i][0] == 'Running':
+                print(f'clamb{i} is Running')
                 self.pod_name_list.append(f'clamb{i}')
                 self.scan_directory_list.append(f'/scana{i}')
                 self.container_name_list.append(f'clamb{i}')
-                print('Pod is Running')
             else:
-                print('Please check pod')
+                action.delete_docker(f'clamb{i}')
+                print(f'Please check clamb{i} status')
+                sys.exit()
 
     def scan_directory(self):
         for i in range(len(self.pod_name_list)):
@@ -130,6 +133,14 @@ class AntiVirus(object):
             logger.write_to_log("INFO", f"Start Date:{start_date[0]}")
             end_date = re.findall(r'End\s*Date:\s*([0-9]+:[0-9]+:[0-9]+\s*[0-9]+:[0-9]+:[0-9]+)', result)
             logger.write_to_log("INFO", f"End Date:{end_date[0]}")
+        time.sleep(1)
+        print('All directories are scanned')
+        time.sleep(1)
+        print('Start deleting containers')
+        for i in range(len(self.pod_name_list)):
+            print(f'Deleting clamb{i}')
+            logger.write_to_log("INFO", f"Delete the container:clamb{i}")
+
 
 
 if __name__ == '__main__':
