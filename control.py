@@ -51,17 +51,17 @@ class AntiVirus(object):
             time.sleep(5)
             print('Checking pod status')
             result = action.check_pod(f'clamb{i}')
-            status = re.findall(r'clamb\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
+            status = re.findall(r'clamb[0-9]+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
             status_list.append(status)
-            for i in range(len(status_list)):
-                if status_list[i][0] == 'Running':
-                    print('Pod is Running')
-                    self.pod_name_list.append(f'clamb{i}')
-                    self.scan_directory_list.append(f'/scana{i}')
-                    self.container_name_list.append(f'clamb{i}')
-                else:
-                    print('Please check pod')
-                    sys.exit()
+        for i in range(len(status_list)):
+            if status_list[i][0] == 'Running':
+                print('Pod is Running')
+                self.pod_name_list.append(f'clamb{i}')
+                self.scan_directory_list.append(f'/scana{i}')
+                self.container_name_list.append(f'clamb{i}')
+            else:
+                print('Please check pod')
+                sys.exit()
 
     def mount_docker_file(self, path_list):
         status_list = []
@@ -96,7 +96,7 @@ class AntiVirus(object):
             action.create_pod(f'config{i}.yaml')
             result = action.check_pod(f'clamb{i}')
             time.sleep(2)
-            status = re.findall(r'clamb\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
+            status = re.findall(r'clamb[0-9]+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
             status_list.append(status)
         for i in range(len(status_list)):
             if status_list[i][0] == 'Running':
