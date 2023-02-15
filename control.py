@@ -43,7 +43,7 @@ class AntiVirus(object):
                 doc = yaml.load(f, Loader=yaml.FullLoader)
             doc['metadata']['name'] = f'clamb{i}'
             doc['spec']['containers'][0]['name'] = f'clamb{i}'
-            doc['spec']['containers'][0]['volumeMounts']['mountPath'] = f'/scana{i}'
+            doc['spec']['containers'][0]['volumeMounts'][0]['mountPath'] = f'/scana{i}'
             doc['spec']['volumes'][0]['persistentVolumeClaim']['claimName'] = claimname_list[i]
             with open(f'config{i}.yaml', 'w', encoding='utf-8') as f:
                 yaml.dump(doc, f)
@@ -59,8 +59,8 @@ class AntiVirus(object):
         #     if status_list[i] == 'Running':
         #         print('Pod is Running')
         #         self.pod_name_list.append(f'clamb{i}')
-        #         self.scan_directory_list.append(f'/scana{i}')
-        #         self.container_name_list.append(f'clamb{i}')
+            self.scan_directory_list.append(f'/scana{i}')
+            self.container_name_list.append(f'clamb{i}')
         #     else:
         #         print('Please check pod')
         #         sys.exit()
@@ -90,7 +90,7 @@ class AntiVirus(object):
                 doc = yaml.load(f, Loader=yaml.FullLoader)
             doc['metadata']['name'] = f'clamb{i}'
             doc['spec']['containers'][0]['name'] = f'clamb{i}'
-            doc['spec']['containers'][0]['volumeMounts']['mountPath'] = f'/scana{i}'
+            doc['spec']['containers'][0]['volumeMounts'][0]['mountPath'] = f'/scana{i}'
             doc['spec']['volumes'][0]['hostPath']['path'] = path_list[i]
             with open(f'config{i}.yaml', 'w', encoding='utf-8') as f:
                 yaml.dump(doc, f)
