@@ -15,8 +15,6 @@ class AntiVirus(object):
         self.pod_name_list = []
         self.container_name_list = []
         self.scan_directory_list = []
-        self.log_directory = os.getcwd() + '/Anti_virus.log'
-        self.scan_directory()
 
     def mount_docker_volume(self, claimname_list):
         status_list = []
@@ -117,11 +115,11 @@ class AntiVirus(object):
             print(self.scan_directory_list[i])
             result = action.scanning(pod_name=self.pod_name_list[i],
                                      container_name=self.container_name_list[i],
-                                     scan_directory=self.scan_directory_list[i],
-                                     log_directory=self.log_directory)
+                                     scan_directory=self.scan_directory_list[i])
             logger.write_to_log("INFO", f"scan result{result}")
 
 
 if __name__ == '__main__':
     anti = AntiVirus()
     anti.mount_docker_volume(['test-pvc'])
+    anti.scan_directory()
