@@ -128,3 +128,8 @@ class AntiVirus(object):
             end_date = re.findall(r'End\s*Date:\s*([0-9]+:[0-9]+:[0-9]+\s*[0-9]+:[0-9]+:[0-9]+)', result)
             logger.write_to_log("INFO", f"End Date:{end_date}")
 
+
+if __name__ == '__main__':
+    anti = AntiVirus()
+    anti.mount_docker_volume(['test-pvc'])
+    anti.scan_directory()

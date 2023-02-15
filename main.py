@@ -21,7 +21,8 @@ class InputParser(object):
                                  dest='version',
                                  help='Show current version',
                                  action='store_true')
-        self.parser_filepath = subp.add_parser("filepath", aliases=['f'], help='Directory to scan')
+        self.parser_filepath = subp.add_parser("filepath", aliases=['f'], help='Directory to scan', type=str
+                                               )
         self.parser_volumes = subp.add_parser("volumes", aliases=['p'], help='Pvc to scan')
         # self.parser_filepath = subp.add_parser("filepath", aliases=['f'], help="Directory to scan")
         # self.parser_filepath.add_argument('-f',
@@ -47,7 +48,7 @@ class InputParser(object):
 
     def volumes_func(self, args):
         logger.write_to_log("INFO", f"Start to mount '{args.pvc}'")
-        control.AntiVirus().mount_docker_file(args.pvc)
+        control.AntiVirus().mount_docker_file(args.volumes)
         control.AntiVirus().scan_directory()
 
     def help_usage(self, args):
