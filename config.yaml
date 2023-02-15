@@ -1,18 +1,17 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: clamav3
+  name: clamb
 spec:
   containers:
-  - image: tiredofit/clamav:2.5.3
-    name: clamav
+  - name: clamb
+    image: tiredofit/clamav:2.5.3
     ports:
     - containerPort: 9009
     volumeMounts:
-      mountPath: /mnt
-      name: logs-volume
+    - name: volumea
+      mountPath: /scana
   volumes:
-  - hostPath:
-      path: /home/fxtadmin/fred_test
-      type: Directory
-    name: logs-volume1
+   - name: volumea
+     persistentVolumeClaim:
+       claimName: test-pvc
