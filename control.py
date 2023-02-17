@@ -56,7 +56,7 @@ class AntiVirus(object):
         time.sleep(8)
         print(f'Checking clamb-{self.claimname} status')
         result = action.check_pod(f'clamb-{self.claimname}')
-        status = re.findall(r'clamb[0-9]+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
+        status = re.findall(fr'clamb-{self.claimname}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
         if status[0] == 'Running':
             print(f'clamb-{self.claimname} is Running')
             self.pod_name_list.append(f'clamb-{self.claimname}')
@@ -101,7 +101,7 @@ class AntiVirus(object):
             time.sleep(8)
             print(f'Checking clamb-{self.filepath} status')
             result = action.check_pod(f'clamb-{self.filepath}')
-            status = re.findall(r'clamb[0-9]+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
+            status = re.findall(fr'clamb-{self.filepath}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
             if status[0] == 'Running':
                 print(f'clamb-{self.filepath} is Running')
                 self.pod_name_list.append(f'clamb-{self.filepath}')
