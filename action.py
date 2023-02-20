@@ -5,7 +5,9 @@ YAML_PATH = os.getcwd()
 
 
 def create_yaml(filename, yaml_dict):
-    utils.ConfFile(file_path=f'{YAML_PATH}/{filename}.yaml').update_yaml(yaml_dict)
+    filepath = os.getcwd() + f'/{filename}.yaml'
+    utils.update_yaml(filepath, yaml_dict)
+    utils.ConfFile(filepath).check_yaml()
 
 
 def create_pod(filename):

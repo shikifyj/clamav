@@ -154,7 +154,7 @@ class Log(object):
         logger.debug(
             "",
             extra={
-                'time':self.time,
+                'time': self.time,
                 'host': self.host,
                 'hostip': self.hostip,
                 'app': self.app,
@@ -182,18 +182,6 @@ class ConfFile(object):
         except TypeError:
             print("Error in the type of file .")
 
-    def update_yaml(self, yaml_dict):
-        """
-        更新yaml文件
-        """
-        try:
-            with open(self.file_path, 'w', encoding='utf-8') as f:
-                yaml.dump(yaml_dict, f, default_flow_style=False)
-        except FileNotFoundError:
-            print("File not found")
-        except TypeError:
-            print("Error in the type of file .")
-
     def check_yaml(self):
 
         try:
@@ -209,3 +197,16 @@ class ConfFile(object):
         except KeyError as e:
             print(f"Missing configuration item {e}.")
             sys.exit()
+
+
+def update_yaml(file_path, yaml_dict):
+    """
+    更新yaml文件
+    """
+    try:
+        with open(file_path, 'w', encoding='utf-8') as f:
+            yaml.dump(yaml_dict, f, default_flow_style=False)
+    except FileNotFoundError:
+        print("File not found")
+    except TypeError:
+        print("Error in the type of file .")
