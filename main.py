@@ -33,10 +33,11 @@ class InputParser(object):
 
     def filepath_func(self, args):
         control.AntiVirus(filepath=args.filepath)
+        logger.write_to_log("INFO", f"Start creating Pod for {args.filepath}")
 
     def volumes_func(self, args):
         control.AntiVirus(claimname=args.volumes)
-
+        logger.write_to_log("INFO", f"Start creating Pod for {args.volumes}")
     def help_usage(self, args):
         if args.version:
             print(f'Version: {consts.VERSION}')
