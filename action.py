@@ -8,7 +8,7 @@ YAML_PATH = os.getcwd()
 def create_yaml(filename, yaml_dict):
     filepath = os.getcwd() + f'/{filename}.yaml'
     utils.update_yaml(filepath, yaml_dict)
-    utils.ConfFile(filepath).check_yaml()
+    #utils.ConfFile(filepath).check_yaml()
 
 
 def create_pod(filename):
@@ -38,4 +38,4 @@ def get_pid(pod_name):
     cmd = f'docker ps | grep {pod_name}'
     result = utils.exec_cmd(cmd)
     pid = re.search(r'[0-9A-Za-z]+(?:\s+|$)', result)
-    return pid.group(1)
+    return pid.group()

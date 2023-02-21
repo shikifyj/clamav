@@ -66,8 +66,7 @@ class AntiVirus(object):
         if status[0] == 'Running':
             print(f'clamb-{self.claimname} is Running')
             pod_id = action.get_pid(f'clamb-{self.claimname}')
-            print(pod_id)
-            logger.write_to_log('INFO', f'clamb-{self.claimname} is Running')
+            logger.write_to_log('INFO', f'[{pod_id}]clamb-{self.claimname} is Running')
             self.pod_name_list.append(f'clamb-{self.claimname}')
             self.scan_directory_list.append(f'/scan')
             self.container_name_list.append(f'clamb-{self.claimname}')
@@ -119,8 +118,9 @@ class AntiVirus(object):
         result = action.check_pod(f'clamb-{self.filepath}')
         status = re.findall(fr'clamb-{self.filepath}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
         if status[0] == 'Running':
+            pod_id = action.get_pid(f'clamb-{self.filepath}')
             print(f'clamb-{self.filepath} is Running')
-            logger.write_to_log('INFO', f'clamb-{self.filepath} is Running')
+            logger.write_to_log('INFO', f'[{pod_id}]clamb-{self.filepath} is Running')
             self.pod_name_list.append(f'clamb-{self.filepath}')
             self.scan_directory_list.append(f'/scan')
             self.container_name_list.append(f'clamb-{self.filepath}')
@@ -133,15 +133,17 @@ class AntiVirus(object):
 
     def scan_directory(self):
         if self.claimname == None:
+            pod_id = action.get_pid(f'clamb-{self.filepath}')
             print(f'Start scanning the {self.filepath} ')
-            logger.write_to_log("INFO", f'Start scanning the {self.filepath}')
+            logger.write_to_log("INFO", f'[{pod_id}]Start scanning the {self.filepath}')
         else:
-            print(f'Start scanning the {self.claimname} ')
+            pod_id = action.get_pid(f'clamb-{self.claimname}')
+            print(f'[{pod_id}]Start scanning the {self.claimname} ')
             logger.write_to_log("INFO", f'Start scanning the {self.claimname}')
         result = action.scanning(pod_name=self.pod_name_list[0],
                                  container_name=self.container_name_list[0],
                                  scan_directory=self.scan_directory_list[0])
-        logger.write_to_log("INFO", 'Scan completely')
+        logger.write_to_log("INFO", f'[{pod_id}]Scan completely')
         print('Scan completely')
         print('----------------------Scan summary----------------------')
         known_viruses = re.findall(r'Known\s*viruses:\s*([0-9]+)', result)
@@ -162,13 +164,13 @@ class AntiVirus(object):
         print(f'End Date:{end_date[0]}')
         print('----------------------------------------------------------')
         logger.write_to_log('INFO',
-                            f'Sacn summary-Virus database：Known viruses:{known_viruses[0]},Engine version:{engine_version[0]}')
+                            f'[{pod_id}]Sacn summary-Virus database：Known viruses:{known_viruses[0]},Engine version:{engine_version[0]}')
         logger.write_to_log('INFO',
-                            f'Scan summary-Task：Infected files:{infected_files[0]},Scanned directories:{scanned_directories[0]},Scanned files:{scanned_files[0]},Data scanned:{data_scanned[0]},Time:{all_time[0]} sec,Start Date:{start_date[0]},End Date:{end_date[0]}')
+                            f'[{pod_id}]Scan summary-Task：Infected files:{infected_files[0]},Scanned directories:{scanned_directories[0]},Scanned files:{scanned_files[0]},Data scanned:{data_scanned[0]},Time:{all_time[0]} sec,Start Date:{start_date[0]},End Date:{end_date[0]}')
         print(f'Start deleting Pod:{self.pod_name_list[0]}')
-        logger.write_to_log('INFO', f'Start deleting Pod:{self.pod_name_list[0]}')
+        logger.write_to_log('INFO', f'[{pod_id}]Start deleting Pod:{self.pod_name_list[0]}')
         action.delete_docker(self.pod_name_list[0])
-        logger.write_to_log('INFO', f'{self.pod_name_list[0]} deleted successfully')
+        logger.write_to_log('INFO', f'[{pod_id}]{self.pod_name_list[0]} deleted successfully')
         print(f'Start deleting yaml:{self.filename}.yaml')
-        logger.write_to_log('INFO', f'Start deleting yaml:{self.filename}.yaml')
-        logger.write_to_log('INFO', f'{self.filename}.yaml deleted successfully')
+        logger.write_to_log('INFO', f'[{pod_id}]Start deleting yaml:{self.filename}.yaml')
+        logger.write_to_log('INFO', f'[{pod_id}]{self.filename}.yaml deleted successfully')
