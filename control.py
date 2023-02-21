@@ -138,14 +138,21 @@ class AntiVirus(object):
             logger.write_to_log("INFO", f'[{pod_id}]Start scanning the {self.filepath}')
         else:
             pod_id = action.get_pid(f'clamb-{self.claimname}')
-            print(f'[{pod_id}]Start scanning the {self.claimname} ')
-            logger.write_to_log("INFO", f'Start scanning the {self.claimname}')
+            print(f'Start scanning the {self.claimname} ')
+            logger.write_to_log("INFO", f'[{pod_id}]Start scanning the {self.claimname}')
         result = action.scanning(pod_name=self.pod_name_list[0],
                                  container_name=self.container_name_list[0],
                                  scan_directory=self.scan_directory_list[0])
         logger.write_to_log("INFO", f'[{pod_id}]Scan completely')
         print('Scan completely')
         print('----------------------Scan summary----------------------')
+        file_list = re.findall(r'\/scan.*FOUND', result)
+        for i in range(len(file_list)):
+            if i >= 0:
+                print(file_list[i])
+                logger.write_to_log('INFO', f'{[pod_id]}{file_list[i]}')
+            else:
+                pass
         known_viruses = re.findall(r'Known\s*viruses:\s*([0-9]+)', result)
         engine_version = re.findall(r'Engine\s*version:\s*([0-9]+.[0-9]+.[0-9])', result)
         scanned_directories = re.findall(r'Scanned\s*directories:\s*([0-9])', result)
