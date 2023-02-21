@@ -150,7 +150,7 @@ class AntiVirus(object):
         for i in range(len(file_list)):
             if i >= 0:
                 print(file_list[i])
-                logger.write_to_log('INFO', f'{[pod_id]}{file_list[i]}')
+                logger.write_to_log('INFO', f'Infected files:{[pod_id]}{file_list[i]}')
             else:
                 pass
         known_viruses = re.findall(r'Known\s*viruses:\s*([0-9]+)', result)
@@ -174,6 +174,12 @@ class AntiVirus(object):
                             f'[{pod_id}]Sacn summary-Virus database：Known viruses:{known_viruses[0]},Engine version:{engine_version[0]}')
         logger.write_to_log('INFO',
                             f'[{pod_id}]Scan summary-Task：Infected files:{infected_files[0]},Scanned directories:{scanned_directories[0]},Scanned files:{scanned_files[0]},Data scanned:{data_scanned[0]},Time:{all_time[0]} sec,Start Date:{start_date[0]},End Date:{end_date[0]}')
+        for i in range(len(file_list)):
+            if i >= 0:
+                print(f'Start deleting Infected files:{file_list[i]}')
+                logger.write_to_log('INFO', f'[{pod_id}]Start deleting Infected files:{file_list[i]}')
+                print(f'{file_list[i]} deleted successfully')
+                logger.write_to_log('INFO', f'[{pod_id}]{file_list[i]} deleted successfully')
         print(f'Start deleting Pod:{self.pod_name_list[0]}')
         logger.write_to_log('INFO', f'[{pod_id}]Start deleting Pod:{self.pod_name_list[0]}')
         action.delete_docker(self.pod_name_list[0])
