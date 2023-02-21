@@ -38,4 +38,4 @@ def get_pid(pod_name):
     cmd = f'docker ps | grep {pod_name}'
     result = utils.exec_cmd(cmd)
     pid = re.search(r'[0-9A-Za-z]+(?:\s+|$)', result)
-    return pid.group()
+    return pid.group().strip()
