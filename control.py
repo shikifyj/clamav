@@ -29,13 +29,18 @@ class AntiVirus(object):
                      'kind': 'Pod',
                      'metadata': {'name': 'clamav3'},
                      'spec': {'containers': [{'name': 'clamav3',
-                                              'image': 'feixitek/clamav:1.0',
+                                              'image': 'tiredofit/clamav:2.5.3',
                                               'ports': [{'containerPort': 9009}],
                                               'volumeMounts': [{'name': 'logs-volume',
-                                                                'mountPath': '/mnt'}]}],
+                                                                'mountPath': '/mnt'},
+                                                               {'name': 'voluma',
+                                                                'mountPath': '/data/definitions'}]}],
                               'volumes': [{'name': 'logs-volume',
                                            'persistentVolumeClaim': {'claimName': 'antivirus-pvc'}
-                                           }
+                                           },
+                                          {'name': 'voluma',
+                                           'hostPath': {'path': '/root/clamav/database',
+                                                        'type': 'Directory'}}
                                           ]
                               }
                      }
@@ -56,11 +61,11 @@ class AntiVirus(object):
             sys.exit()
         with open(os.getcwd() + f'/{self.filename}.yaml', 'w', encoding='utf-8') as f:
             yaml.dump(doc, f)
-        print(f'Start create pod: clamb-{self.claimname}')
+        print(f'Create pod: clamb-{self.claimname}')
         action.create_pod(f'{self.filename}.yaml')
         logger.write_to_log("INFO", f"Create pod: clamb-{self.claimname}")
         time.sleep(12)
-        print(f'Checking clamb-{self.claimname} status')
+        print(f'Check clamb-{self.claimname} status')
         result = action.check_pod(f'clamb-{self.claimname}')
         status = re.findall(fr'clamb-{self.claimname}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
         if status[0] == 'Running':
@@ -82,14 +87,20 @@ class AntiVirus(object):
                      'kind': 'Pod',
                      'metadata': {'name': 'clamav3'},
                      'spec': {'containers': [{'name': 'clamav3',
-                                              'image': 'feixitek/clamav:1.0',
+                                              'image': 'tiredofit/clamav:2.5.3',
                                               'ports': [{'containerPort': 9009}],
                                               'volumeMounts': [{'name': 'logs-volume',
-                                                                'mountPath': '/mnt'}]}],
+                                                                'mountPath': '/mnt'},
+                                                               {'name': 'voluma',
+                                                                'mountPath': '/data/definitions'}
+                                                               ]}],
                               'volumes': [{'name': 'logs-volume',
                                            'hostPath': {'path': '/home/fxtadmin/fred_test',
                                                         'type': 'Directory'}
-                                           }
+                                           },
+                                          {'name': 'voluma',
+                                           'hostPath': {'path': '/root/clamav/database',
+                                                        'type': 'Directory'}}
                                           ]
                               }
                      }
@@ -110,11 +121,11 @@ class AntiVirus(object):
             sys.exit()
         with open(os.getcwd() + f'/{self.filename}.yaml', 'w', encoding='utf-8') as f:
             yaml.dump(doc, f)
-        print(f'Start create pod: clamb-{self.filepath}')
+        print(f'Create pod: clamb-{self.filepath}')
         action.create_pod(f'{self.filename}.yaml')
         logger.write_to_log("INFO", f"Create pod: clamb-{self.filepath}")
         time.sleep(12)
-        print(f'Checking clamb-{self.filepath} status')
+        print(f'Check clamb-{self.filepath} status')
         result = action.check_pod(f'clamb-{self.filepath}')
         status = re.findall(fr'clamb-{self.filepath}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
         if status[0] == 'Running':
@@ -134,12 +145,12 @@ class AntiVirus(object):
     def scan_directory(self):
         if self.claimname == None:
             pod_id = action.get_pid(f'clamb-{self.filepath}')
-            print(f'Start scanning the {self.filepath} ')
+            print(f'Scan the {self.filepath} ')
             logger.write_to_log("INFO", f'[{pod_id}]Start scanning the {self.filepath}')
         else:
             pod_id = action.get_pid(f'clamb-{self.claimname}')
-            print(f'Start scanning the {self.claimname} ')
-            logger.write_to_log("INFO", f'[{pod_id}]Start scanning the {self.claimname}')
+            print(f'Scan the {self.claimname} ')
+            logger.write_to_log("INFO", f'[{pod_id}]Scan the {self.claimname}')
         result = action.scanning(pod_name=self.pod_name_list[0],
                                  container_name=self.container_name_list[0],
                                  scan_directory=self.scan_directory_list[0])
@@ -150,7 +161,7 @@ class AntiVirus(object):
         for i in range(len(file_list)):
             if i >= 0:
                 print(file_list[i])
-                logger.write_to_log('INFO', f'Infected files:{[pod_id]}{file_list[i]}')
+                logger.write_to_log('INFO', f'{[pod_id]}Infected files:{file_list[i]}')
             else:
                 pass
         known_viruses = re.findall(r'Known\s*viruses:\s*([0-9]+)', result)
