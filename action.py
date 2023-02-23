@@ -24,7 +24,7 @@ def check_pod(pod_name):
 
 
 def scanning(pod_name, container_name, scan_directory):
-    cmd = f'kubectl exec -it {pod_name} -c {container_name} -- clamscan -r {scan_directory} -i'
+    cmd = f'kubectl exec -it {pod_name} -c {container_name} -- clamscan -r {scan_directory} -i --remove'
     result = utils.exec_cmd(cmd)
     return result
 
@@ -39,3 +39,7 @@ def get_pid(pod_name):
     result = utils.exec_cmd(cmd)
     pid = re.search(r'[0-9A-Za-z]+(?:\s+|$)', result)
     return pid.group().strip()
+
+def delete_yaml(file_name):
+    cmd = f'rm {file_name}.yaml'
+    utils.exec_cmd(cmd)

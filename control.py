@@ -206,4 +206,5 @@ class AntiVirus(object):
         logger.write_to_log('INFO', f'[{pod_id}]{self.pod_name_list[0]} deleted successfully')
         print(f'Delete yaml:{self.filename}.yaml')
         logger.write_to_log('INFO', f'[{pod_id}]Delete yaml:{self.filename}.yaml')
+        action.delete_yaml(self.filename)
         logger.write_to_log('INFO', f'[{pod_id}]{self.filename}.yaml deleted successfully')
