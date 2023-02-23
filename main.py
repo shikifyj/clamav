@@ -36,7 +36,7 @@ class InputParser(object):
                                '--remove',
                                dest='remove',
                                help='Remove infected files',
-                               default=' --remove',
+                               default='',
                                action='store')
         self.scan.set_defaults(func=self.scan_func)
         self.parser.set_defaults(func=self.help_usage)
