@@ -152,7 +152,11 @@ class AntiVirus(object):
             print(f'Scan the {self.claimname} ')
             logger.write_to_log("INFO", f'[{pod_id}]Scan the {self.claimname}')
         if remove == 'remove':
-            remove = '--remove'
+            remove = ' --remove'
+        elif remove == '':
+            remove = ''
+        else:
+            remove = ' --remove'
         result = action.scanning(pod_name=self.pod_name_list[0],
                                  container_name=self.container_name_list[0],
                                  scan_directory=self.scan_directory_list[0],
