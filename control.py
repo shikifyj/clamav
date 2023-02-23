@@ -172,19 +172,27 @@ class AntiVirus(object):
         data_scanned = re.findall(r'Data\s*scanned:\s*([0-9]*.[0-9]*\s*[A-Z]*)', result)
         all_time = re.findall(r'Time:\s*([0-9]+.[0-9]+\s*[a-z]+)', result)
         start_date = re.findall(r'Start\s*Date:\s*([0-9]+:[0-9]+:[0-9]+\s*[0-9]+:[0-9]+:[0-9]+)', result)
+        start_date1 = list(start_date[0])
+        start_date1[4] = '-'
+        start_date1[7] = '-'
+        start_date2 = ''.join(start_date1)
         end_date = re.findall(r'End\s*Date:\s*([0-9]+:[0-9]+:[0-9]+\s*[0-9]+:[0-9]+:[0-9]+)', result)
+        end_date1 = list(end_date[0])
+        end_date1[4] = '-'
+        end_date1[7] = '-'
+        end_date2 = ''.join(end_date1)
         print(f'Scanned directories:{scanned_directories[0]}')
         print(f'Scanned files:{scanned_files[0]}')
         print(f'Infected files:{infected_files[0]}')
         print(f'Data scanned:{data_scanned[0]}')
         print(f'Time:{all_time[0]} sec')
-        print(f'Start Date:{start_date[0]}')
-        print(f'End Date:{end_date[0]}')
+        print(f'Start Date:{start_date2}')
+        print(f'End Date:{end_date2}')
         print('----------------------------------------------------------')
         logger.write_to_log('INFO',
                             f'[{pod_id}]Sacn summary-Virus database：Known viruses:{known_viruses[0]},Engine version:{engine_version[0]}')
         logger.write_to_log('INFO',
-                            f'[{pod_id}]Scan summary-Task：Infected files:{infected_files[0]},Scanned directories:{scanned_directories[0]},Scanned files:{scanned_files[0]},Data scanned:{data_scanned[0]},Time:{all_time[0]} sec,Start Date:{start_date[0]},End Date:{end_date[0]}')
+                            f'[{pod_id}]Scan summary-Task：Infected files:{infected_files[0]},Scanned directories:{scanned_directories[0]},Scanned files:{scanned_files[0]},Data scanned:{data_scanned[0]},Time:{all_time[0]} sec,Start Date:{start_date2},End Date:{end_date2}')
         for i in range(len(file_list)):
             if i >= 0:
                 files = file_list[i].strip(': Eicar-Signature FOUND')
