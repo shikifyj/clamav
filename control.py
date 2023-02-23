@@ -10,7 +10,7 @@ logger = utils.Log()
 
 
 class AntiVirus(object):
-    def __init__(self, claimname=None, filepath=None):
+    def __init__(self, claimname=None, filepath=None, remove=None):
         self.pod_name_list = []
         self.container_name_list = []
         self.scan_directory_list = []
@@ -19,10 +19,10 @@ class AntiVirus(object):
         self.filename = f'config_{int(round(time.time() * 1000))}'
         if claimname == None:
             self.mount_docker_file()
-            self.scan_directory()
+            self.scan_directory(remove)
         else:
             self.mount_docker_volume()
-            self.scan_directory()
+            self.scan_directory(remove)
 
     def mount_docker_volume(self):
         dict_yaml = {'apiVersion': 'v1',
@@ -142,7 +142,7 @@ class AntiVirus(object):
                                 f'Please check clamb-{self.filepath} status,{self.filepath} stop disinfection')
             sys.exit()
 
-    def scan_directory(self):
+    def scan_directory(self, remove):
         if self.claimname == None:
             pod_id = action.get_pid(f'clamb-{self.filepath}')
             print(f'Scan the {self.filepath} ')
@@ -153,7 +153,8 @@ class AntiVirus(object):
             logger.write_to_log("INFO", f'[{pod_id}]Scan the {self.claimname}')
         result = action.scanning(pod_name=self.pod_name_list[0],
                                  container_name=self.container_name_list[0],
-                                 scan_directory=self.scan_directory_list[0])
+                                 scan_directory=self.scan_directory_list[0],
+                                 remove=remove)
         logger.write_to_log("INFO", f'[{pod_id}]Scan completely')
         print('Scan completely')
         print('----------------------Scan summary----------------------')
@@ -185,14 +186,14 @@ class AntiVirus(object):
         print(f'Scanned files:{scanned_files[0]}')
         print(f'Infected files:{infected_files[0]}')
         print(f'Data scanned:{data_scanned[0]}')
-        print(f'Time:{all_time[0]} sec')
+        print(f'Time:{all_time[0]}')
         print(f'Start Date:{start_date2}')
         print(f'End Date:{end_date2}')
         print('----------------------------------------------------------')
         logger.write_to_log('INFO',
                             f'[{pod_id}]Sacn summary-Virus database：Known viruses:{known_viruses[0]},Engine version:{engine_version[0]}')
         logger.write_to_log('INFO',
-                            f'[{pod_id}]Scan summary-Task：Infected files:{infected_files[0]},Scanned directories:{scanned_directories[0]},Scanned files:{scanned_files[0]},Data scanned:{data_scanned[0]},Time:{all_time[0]} sec,Start Date:{start_date2},End Date:{end_date2}')
+                            f'[{pod_id}]Scan summary-Task：Infected files:{infected_files[0]},Scanned directories:{scanned_directories[0]},Scanned files:{scanned_files[0]},Data scanned:{data_scanned[0]},Time:{all_time[0]},Start Date:{start_date2},End Date:{end_date2}')
         for i in range(len(file_list)):
             if i >= 0:
                 files = file_list[i].strip(': Eicar-Signature FOUND')

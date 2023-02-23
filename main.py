@@ -32,14 +32,20 @@ class InputParser(object):
                                dest='volumes',
                                help='Pvc to scan',
                                action='store')
+        self.scan.add_argument('-r',
+                               '--remove',
+                               dest='remove',
+                               help='Remove infected files',
+                               default=' --remove',
+                               action='store')
         self.scan.set_defaults(func=self.scan_func)
         self.parser.set_defaults(func=self.help_usage)
 
     def scan_func(self, args):
         if args.filepath:
-            control.AntiVirus(filepath=args.filepath)
+            control.AntiVirus(filepath=args.filepath, remove=args.remove)
         elif args.volumes:
-            control.AntiVirus(claimname=args.volumes)
+            control.AntiVirus(claimname=args.volumes, remove=args.remove)
 
     def help_usage(self, args):
         if args.version:
