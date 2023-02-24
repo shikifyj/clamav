@@ -10,7 +10,11 @@ logger = utils.Log()
 
 
 class AntiVirus(object):
-    def __init__(self, claimname=None, filepath=None, remove=''):
+    def __init__(self, claimname=None, filepath=None, remove=False):
+        if remove == False:
+            remove = ''
+        elif remove == True:
+            remove = ' --remove'
         self.pod_name_list = []
         self.container_name_list = []
         self.scan_directory_list = []
@@ -215,7 +219,7 @@ class AntiVirus(object):
                                     f'Start Date:{start_date2},'
                                     f'End Date:{end_date2}')
         for i in range(len(file_list)):
-            if i >= 0 and remove ==' --remove':
+            if i >= 0 and remove == ' --remove':
                 files = file_list[i].strip(': Eicar-Signature FOUND')
                 print(f'Delete infected files:{files}')
                 logger.write_to_log('INFO', f'[{pod_id}]Delete infected files:{files}')
