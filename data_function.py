@@ -26,7 +26,8 @@ class InputParser(object):
                                '--filepath',
                                dest='filepath',
                                help='Directory to scan',
-                               action='store')
+                               action='store',
+                               required=True)
         self.scan.add_argument('-p',
                                '--volumes',
                                dest='volumes',
@@ -36,8 +37,9 @@ class InputParser(object):
                                '--remove',
                                dest='remove',
                                help='Remove infected files',
-                               default='',
-                               action='store')
+                               default=' --remove',
+                               action='store',
+                               required=False)
         self.scan.set_defaults(func=self.scan_func)
         self.parser.set_defaults(func=self.help_usage)
 
