@@ -26,8 +26,7 @@ class InputParser(object):
                                '--filepath',
                                dest='filepath',
                                help='Directory to scan',
-                               action='store',
-                               required=True)
+                               action='store')
         self.scan.add_argument('-p',
                                '--volumes',
                                dest='volumes',
