@@ -170,7 +170,8 @@ class AntiVirus(object):
         for i in range(len(file_list)):
             if i >= 0:
                 print(file_list[i])
-                logger.write_to_log('INFO', f'{[pod_id]}Infected files:{file_list[i]}')
+                file1 = file_list[i].strip(': Eicar-Signature FOUND')
+                logger.write_to_log('INFO', f'{[pod_id]}Infected files:{file1}')
             else:
                 pass
         known_viruses = re.findall(r'Known\s*viruses:\s*([0-9]+)', result)
