@@ -45,16 +45,17 @@ class AntiVirus(object):
                               }
                      }
         action.create_yaml(self.filename, dict_yaml)
-        print(f'Create yaml for Pod：{self.filename}.yaml')
-        logger.write_to_log("INFO", f'Create yaml for Pod：{self.filename}.yaml')
+        print(f'Create yaml files：{self.filename}.yaml')
+        logger.write_to_log("INFO", f'Create yaml files：{self.filename}.yaml')
         try:
             with open(os.getcwd() + f'/{self.filename}.yaml') as f:
-                logger.write_to_log('INFO', f'{self.filename}.yaml created successfully')
                 doc = yaml.load(f, Loader=yaml.FullLoader)
                 doc['metadata']['name'] = f'clamb-{self.claimname}'
                 doc['spec']['containers'][0]['name'] = f'clamb-{self.claimname}'
                 doc['spec']['containers'][0]['volumeMounts'][0]['mountPath'] = f'/scan'
                 doc['spec']['volumes'][0]['persistentVolumeClaim']['claimName'] = self.claimname
+                logger.write_to_log('INFO',
+                                    f'{self.filename}.yaml created successfully,volume_mount_path:/scan,claimName:{self.claimname}')
         except FileNotFoundError:
             print(f'WARNING：{self.filename}.yaml created failed')
             logger.write_to_log('WARNING', f'{self.filename}.yaml created failed')
@@ -71,7 +72,7 @@ class AntiVirus(object):
         if status[0] == 'Running':
             print(f'clamb-{self.claimname} is Running')
             pod_id = action.get_pid(f'clamb-{self.claimname}')
-            logger.write_to_log('INFO', f'[{pod_id}]clamb-{self.claimname} is Running')
+            logger.write_to_log('INFO', f'[{pod_id}]clamb-{self.claimname} is Running,PID is [{pod_id}]')
             self.pod_name_list.append(f'clamb-{self.claimname}')
             self.scan_directory_list.append(f'/scan')
             self.container_name_list.append(f'clamb-{self.claimname}')
@@ -109,12 +110,13 @@ class AntiVirus(object):
         logger.write_to_log("INFO", f'Create yaml for Pod：{self.filename}.yaml')
         try:
             with open(os.getcwd() + f'/{self.filename}.yaml') as f:
-                logger.write_to_log('INFO', f'{self.filename}.yaml created successfully')
                 doc = yaml.load(f, Loader=yaml.FullLoader)
                 doc['metadata']['name'] = f'clamb-{self.filepath}'
                 doc['spec']['containers'][0]['name'] = f'clamb-{self.filepath}'
                 doc['spec']['containers'][0]['volumeMounts'][0]['mountPath'] = f'/scan'
                 doc['spec']['volumes'][0]['hostPath']['path'] = self.filepath
+                logger.write_to_log('INFO',
+                                    f'{self.filename}.yaml created successfully,volume_mount_path:/scan,volumes_path:{self.filepath}')
         except FileNotFoundError:
             print(f'WARNING：{self.filename}.yaml created failed')
             logger.write_to_log('WARNING', f'{self.filename}.yaml created failed')
@@ -131,7 +133,7 @@ class AntiVirus(object):
         if status[0] == 'Running':
             pod_id = action.get_pid(f'clamb-{self.filepath}')
             print(f'clamb-{self.filepath} is Running')
-            logger.write_to_log('INFO', f'[{pod_id}]clamb-{self.filepath} is Running')
+            logger.write_to_log('INFO', f'[{pod_id}]clamb-{self.filepath} is Running,PID is [{pod_id}]')
             self.pod_name_list.append(f'clamb-{self.filepath}')
             self.scan_directory_list.append(f'/scan')
             self.container_name_list.append(f'clamb-{self.filepath}')
