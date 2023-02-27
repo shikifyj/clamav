@@ -10,11 +10,7 @@ logger = utils.Log()
 
 
 class AntiVirus(object):
-    def __init__(self, claimname=None, filepath=None, remove=False):
-        if remove == False:
-            remove = ''
-        elif remove == True:
-            remove = ' --remove'
+    def __init__(self, claimname=None, filepath=None, remove=''):
         self.pod_name_list = []
         self.container_name_list = []
         self.scan_directory_list = []

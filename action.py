@@ -8,7 +8,7 @@ YAML_PATH = os.getcwd()
 def create_yaml(filename, yaml_dict):
     filepath = os.getcwd() + f'/{filename}.yaml'
     utils.update_yaml(filepath, yaml_dict)
-    #utils.ConfFile(filepath).check_yaml()
+    # utils.ConfFile(filepath).check_yaml()
 
 
 def create_pod(filename):
@@ -41,6 +41,7 @@ def get_pid(pod_name):
     pid = re.search(r'[0-9A-Za-z]+(?:\s+|$)', result)
     return pid.group().strip()
 
+
 def delete_yaml(file_name):
-    cmd = f'rm {file_name}.yaml'
+    cmd = f'rm {YAML_PATH}/{file_name}.yaml'
     utils.exec_cmd(cmd)

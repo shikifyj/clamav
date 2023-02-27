@@ -36,18 +36,19 @@ class InputParser(object):
                                '--remove',
                                dest='remove',
                                help='Remove infected files',
-                               type=bool,
-                               default=False,
-                               action='store',
-                               required=False)
+                               action='store_true')
         self.scan.set_defaults(func=self.scan_func)
         self.parser.set_defaults(func=self.help_usage)
 
     def scan_func(self, args):
         if args.filepath:
-            control.AntiVirus(filepath=args.filepath, remove=args.remove)
+            control.AntiVirus(filepath=args.filepath)
         elif args.volumes:
-            control.AntiVirus(claimname=args.volumes, remove=args.remove)
+            control.AntiVirus(claimname=args.volumes)
+        elif args.filepath and args.remove:
+            control.AntiVirus(filepath=args.filepath, remove=' --remove')
+        elif args.volumes and args.remove:
+            control.AntiVirus(claimname=args.volumes, remove=' --remove')
 
     def help_usage(self, args):
         if args.version:
