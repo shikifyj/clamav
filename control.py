@@ -211,7 +211,7 @@ class AntiVirus(object):
                     f'Data scanned:{data_scanned[0]},Time:{all_time[0]},Start Date:{start_date2},End Date:{end_date2}')
                 print('infected files list:')
                 files_list.append(re.findall(r'/scan.*:', file_list[i])[0].strip(':'))
-                virus_list.append(re.findall(r':\s[A-Za-z]+-[A-Za-z]+', files_list[0])[0].strip(':'))
+                virus_list.append(re.findall(r':\s[A-Za-z]+-[A-Za-z]+', files_list[i])[0].strip(':'))
                 utils.Table().add_data([f'{files_list[i]}', f'{virus_list[i]}'])
         else:
             logger.write_to_log('INFO',
