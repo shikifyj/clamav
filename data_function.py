@@ -42,13 +42,9 @@ class InputParser(object):
 
     def scan_func(self, args):
         if args.filepath:
-            control.AntiVirus(filepath=args.filepath)
+            control.AntiVirus(filepath=args.filepath, remove=args.remove)
         elif args.volumes:
-            control.AntiVirus(claimname=args.volumes)
-        elif args.filepath and args.remove:
-            control.AntiVirus(filepath=args.filepath, remove=' --remove')
-        elif args.volumes and args.remove:
-            control.AntiVirus(claimname=args.volumes, remove=' --remove')
+            control.AntiVirus(claimname=args.volumes, remove=args.remove)
 
     def help_usage(self, args):
         if args.version:
