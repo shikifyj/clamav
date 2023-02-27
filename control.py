@@ -187,14 +187,6 @@ class AntiVirus(object):
         end_date1[4] = '-'
         end_date1[7] = '-'
         end_date2 = ''.join(end_date1)
-        print(f'Scanned directories:{scanned_directories[0]}')
-        print(f'Scanned files:{scanned_files[0]}')
-        print(f'Infected files:{infected_files[0]}')
-        print(f'Data scanned:{data_scanned[0]}')
-        print(f'Time:{all_time[0]}')
-        print(f'Start Date:{start_date2}')
-        print(f'End Date:{end_date2}')
-        print('----------------------------------------------------------')
         logger.write_to_log('INFO',
                             f'[{pod_id}]Sacn summary-Virus database：Known viruses:{known_viruses[0]},'
                             f'Engine version:{engine_version[0]}')
