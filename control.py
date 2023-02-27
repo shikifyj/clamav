@@ -26,7 +26,6 @@ class AntiVirus(object):
             self.scan_directory(remove)
         else:
             self.mount_docker_volume()
-            print(f'remove:{remove}')
             self.scan_directory(remove)
 
     def mount_docker_volume(self):

@@ -25,7 +25,6 @@ def check_pod(pod_name):
 
 def scanning(pod_name, container_name, scan_directory, remove):
     cmd = f'kubectl exec -it {pod_name} -c {container_name} -- clamscan -r {scan_directory} -i{remove}'
-    print(cmd)
     result = utils.exec_cmd(cmd)
     return result
 
