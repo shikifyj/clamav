@@ -217,7 +217,6 @@ class Table(object):
     def __init__(self):
         self.header = ['file', 'Virus type']
         self.table = prettytable.PrettyTable()
-        self.print_table()
 
     def add_data(self, list_data):
         self.table.add_row(list_data)

@@ -193,6 +193,7 @@ class AntiVirus(object):
         if len(file_list) > 0:
             files_list = []
             virus_list = []
+            print_table = utils.Table()
 
             for i in range(len(file_list)):
                 logger.write_to_log('WARNING',
@@ -212,7 +213,8 @@ class AntiVirus(object):
                 print('infected files list:')
                 files_list.append(re.findall(r'/scan.*:', file_list[i])[0].strip(':'))
                 virus_list.append(re.findall(r':\s[A-Za-z]+-[A-Za-z]+', file_list[i])[0].strip(':'))
-                utils.Table().add_data([f'{files_list[i]}', f'{virus_list[i]}'])
+                print_table.add_data([f'{files_list[i]}', f'{virus_list[i]}'])
+                print_table.print_table()
         else:
             logger.write_to_log('INFO',
                                 f'[{pod_id}]Scan summary-Task：Infected files:{infected_files[0]},'
