@@ -191,7 +191,7 @@ class AntiVirus(object):
                             f'[{pod_id}]Sacn summary-Virus database：Known viruses:{known_viruses[0]},'
                             f'Engine version:{engine_version[0]}')
         for i in range(len(file_list)):
-            if i >= 0:
+            if i > 0:
                 logger.write_to_log('WARNING',
                                     f'[{pod_id}]Scan summary-Task：Infected files:{infected_files[0]},'
                                     f'Scanned directories:{scanned_directories[0]},'
@@ -208,7 +208,6 @@ class AntiVirus(object):
                     f'Data scanned:{data_scanned[0]},Time:{all_time[0]},Start Date:{start_date2},End Date:{end_date2}')
                 print('infected files list:')
                 print(file_list[i])
-
             else:
                 logger.write_to_log('INFO',
                                     f'[{pod_id}]Scan summary-Task：Infected files:{infected_files[0]},'
