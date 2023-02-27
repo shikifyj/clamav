@@ -191,6 +191,9 @@ class AntiVirus(object):
                             f'[{pod_id}]Sacn summary-Virus database：Known viruses:{known_viruses[0]},'
                             f'Engine version:{engine_version[0]}')
         if len(file_list) > 0:
+            files_list = []
+            virus_list = []
+
             for i in range(len(file_list)):
                 logger.write_to_log('WARNING',
                                     f'[{pod_id}]Scan summary-Task：Infected files:{infected_files[0]},'
@@ -200,14 +203,16 @@ class AntiVirus(object):
                                     f'Time:{all_time[0]},'
                                     f'Start Date:{start_date2},'
                                     f'End Date:{end_date2}')
-                print(f'WARNING: Scan summary-{infected_files[0]} infected files found')
+                print(f'WARNING: Scan summary- {infected_files[0]} infected files found')
                 print(
                     f'Scan summary-Virus database:Known viruses:{known_viruses[0]},Engine version:{engine_version[0]}')
                 print(
                     f'Scan summary-Task:{scanned_directories[0]} directories scanned,{scanned_files[0]} files scanned,'
                     f'Data scanned:{data_scanned[0]},Time:{all_time[0]},Start Date:{start_date2},End Date:{end_date2}')
                 print('infected files list:')
-                print(file_list[i])
+                files_list.append(re.findall(r'/scan.*:', file_list[i])[0].strip(':'))
+                virus_list.append(re.findall(r':\s[A-Za-z]+-[A-Za-z]+', files_list[0])[0].strip(':'))
+                utils.Table().add_data([f'{files_list[i]}', f'{virus_list[i]}'])
         else:
             logger.write_to_log('INFO',
                                 f'[{pod_id}]Scan summary-Task：Infected files:{infected_files[0]},'

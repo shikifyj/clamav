@@ -8,6 +8,7 @@ import logging.config
 import threading
 import os
 import yaml
+import prettytable
 from datetime import datetime
 
 LOG_PATH = os.getcwd() + '/Anti_virus.log'
@@ -210,3 +211,16 @@ def update_yaml(file_path, yaml_dict):
         print("File not found")
     except TypeError:
         print("Error in the type of file .")
+
+
+class Table(object):
+    def __init__(self):
+        self.header = ['file', 'Virus type']
+        self.table = prettytable.PrettyTable()
+
+    def add_data(self, list_data):
+        self.table.add_row(list_data)
+
+    def print_table(self):
+        self.table.field_names = self.header
+        print(self.table)
