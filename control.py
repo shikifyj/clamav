@@ -164,11 +164,9 @@ class AntiVirus(object):
                                  remove=remove)
         logger.write_to_log("INFO", f'[{pod_id}]Scan completely')
         print('Scan completely')
-        print('----------------------Scan summary----------------------')
         file_list = re.findall(r'\/scan.*FOUND', result)
         for i in range(len(file_list)):
             if i >= 0:
-                print(file_list[i])
                 file1 = file_list[i].strip(': Eicar-Signature FOUND')
                 logger.write_to_log('WARNING', f'{[pod_id]}Infected files:{file1}')
             else:
@@ -199,7 +197,8 @@ class AntiVirus(object):
         print(f'End Date:{end_date2}')
         print('----------------------------------------------------------')
         logger.write_to_log('INFO',
-                            f'[{pod_id}]Sacn summary-Virus database：Known viruses:{known_viruses[0]},Engine version:{engine_version[0]}')
+                            f'[{pod_id}]Sacn summary-Virus database：Known viruses:{known_viruses[0]},'
+                            f'Engine version:{engine_version[0]}')
         for i in range(len(file_list)):
             if i >= 0:
                 logger.write_to_log('WARNING',
@@ -210,6 +209,15 @@ class AntiVirus(object):
                                     f'Time:{all_time[0]},'
                                     f'Start Date:{start_date2},'
                                     f'End Date:{end_date2}')
+                print(f'WARNING: Scan summary-{infected_files[0]} infected files found')
+                print(
+                    f'Scan summary-Virus database:Known viruses:{known_viruses[0]},Engine version:{engine_version[0]}')
+                print(
+                    f'Scan summary-Task:{scanned_directories[0]} directories scanned,{scanned_files[0]} files scanned,'
+                    f'Data scanned:{data_scanned[0]},Time:{all_time[0]},Start Date:{start_date2},End Date:{end_date2}')
+                print('infected files list:')
+                print(file_list[i])
+
             else:
                 logger.write_to_log('INFO',
                                     f'[{pod_id}]Scan summary-Task：Infected files:{infected_files[0]},'
@@ -219,6 +227,12 @@ class AntiVirus(object):
                                     f'Time:{all_time[0]},'
                                     f'Start Date:{start_date2},'
                                     f'End Date:{end_date2}')
+                print(f'INFO: Scan summary-NO infected files found')
+                print(
+                    f'Scan summary-Virus database:Known viruses:{known_viruses[0]},Engine version:{engine_version[0]}')
+                print(
+                    f'Scan summary-Task:{scanned_directories[0]} directories scanned,{scanned_files[0]} files scanned,'
+                    f'Data scanned:{data_scanned[0]},Time:{all_time[0]},Start Date:{start_date2},End Date:{end_date2}')
         for i in range(len(file_list)):
             if i >= 0 and remove == ' --remove':
                 files = file_list[i].strip(': Eicar-Signature FOUND')
