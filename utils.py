@@ -2,6 +2,7 @@ import subprocess
 import socket
 import sys
 import time
+import webhook
 import logging
 import logging.handlers
 import logging.config
@@ -12,7 +13,7 @@ import prettytable
 from datetime import datetime
 
 LOG_PATH = os.getcwd() + '/Anti_virus.log'
-
+AUDIT_2_WEBHOOK = True
 
 def exec_cmd(cmd, timeout=300):
     p = subprocess.Popen(cmd, stderr=subprocess.STDOUT,
@@ -133,7 +134,7 @@ class Log(object):
         return Log._instance
 
     # write to log file
-    def write_to_log(self, level, msg):
+    def write_to_log(self, level, msg, audit=False):
         logger = Log._instance.logger
 
         # 获取到日志开关不为True时，移除处理器，不再将数据记录到文件中
@@ -163,7 +164,16 @@ class Log(object):
                 'severity': level,
                 'sourceip': self.sourceip,
                 'msgdata': msg})
-
+        if AUDIT_2_WEBHOOK & audit:
+            timea = self.time
+            workspacea = self.host + "(" + self.hostip + ")"
+            infoa = msg
+            typea = self.app
+            resa = self.auditobj
+            sourceIPa = self.hostip
+            loglevela = level
+            webhook.wh_interface(Time=timea, Workspace=workspacea, Reason=infoa, AuditResType=typea, ResName=resa,
+                                 SourceIPs=sourceIPa, LogLevel=loglevela)
 
 class ConfFile(object):
     def __init__(self, file_path):

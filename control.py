@@ -152,22 +152,22 @@ class AntiVirus(object):
         if self.claimname == None:
             pod_id = action.get_pid(f'clamb-{self.filepath}')
             print(f'Scan the {self.filepath} ')
-            logger.write_to_log("INFO", f'[{pod_id}]Start scanning the {self.filepath}')
+            logger.write_to_log("INFO", f'[{pod_id}]Scan the {self.filepath}', True)
         else:
             pod_id = action.get_pid(f'clamb-{self.claimname}')
             print(f'Scan the {self.claimname} ')
-            logger.write_to_log("INFO", f'[{pod_id}]Scan the {self.claimname}')
+            logger.write_to_log("INFO", f'[{pod_id}]Scan the {self.claimname}', True)
         result = action.scanning(pod_name=self.pod_name_list[0],
                                  container_name=self.container_name_list[0],
                                  scan_directory=self.scan_directory_list[0],
                                  remove=remove)
-        logger.write_to_log("INFO", f'[{pod_id}]Scan completely')
+        logger.write_to_log("INFO", f'[{pod_id}]Scan completely', True)
         print('Scan completely')
         file_list = re.findall(r'\/scan.*FOUND', result)
         for i in range(len(file_list)):
             if i >= 0:
                 file1 = file_list[i].strip(': Eicar-Signature FOUND')
-                logger.write_to_log('WARNING', f'{[pod_id]}Infected files:{file1}')
+                logger.write_to_log('WARNING', f'{[pod_id]}Infected files:{file1}', True)
             else:
                 pass
         known_viruses = re.findall(r'Known\s*viruses:\s*([0-9]+)', result)
@@ -189,7 +189,7 @@ class AntiVirus(object):
         end_date2 = ''.join(end_date1)
         logger.write_to_log('INFO',
                             f'[{pod_id}]Sacn summary-Virus database：Known viruses:{known_viruses[0]},'
-                            f'Engine version:{engine_version[0]}')
+                            f'Engine version:{engine_version[0]}', True)
         if len(file_list) > 0:
             files_list = []
             virus_list = []
@@ -203,7 +203,7 @@ class AntiVirus(object):
                                     f'Data scanned:{data_scanned[0]},'
                                     f'Time:{all_time[0]},'
                                     f'Start Date:{start_date2},'
-                                    f'End Date:{end_date2}')
+                                    f'End Date:{end_date2}', True)
                 print(f'WARNING: Scan summary- {infected_files[0]} infected files found')
                 print(
                     f'Scan summary-Virus database:Known viruses:{known_viruses[0]},Engine version:{engine_version[0]}')
@@ -223,7 +223,7 @@ class AntiVirus(object):
                                 f'Data scanned:{data_scanned[0]},'
                                 f'Time:{all_time[0]},'
                                 f'Start Date:{start_date2},'
-                                f'End Date:{end_date2}')
+                                f'End Date:{end_date2}', True)
             print(f'INFO: Scan summary-NO infected files found')
             print(
                 f'Scan summary-Virus database:Known viruses:{known_viruses[0]},Engine version:{engine_version[0]}')
@@ -234,9 +234,9 @@ class AntiVirus(object):
             if i >= 0 and remove == ' --remove':
                 files = file_list[i].strip(': Eicar-Signature FOUND')
                 print(f'Delete infected files:{files}')
-                logger.write_to_log('INFO', f'[{pod_id}]Delete infected files:{files}')
+                logger.write_to_log('INFO', f'[{pod_id}]Delete infected files:{files}', True)
                 print(f'{files} deleted successfully')
-                logger.write_to_log('INFO', f'[{pod_id}]{files} deleted successfully')
+                logger.write_to_log('INFO', f'[{pod_id}]{files} deleted successfully', True)
         print(f'Delete Pod:{self.pod_name_list[0]}')
         logger.write_to_log('INFO', f'[{pod_id}]Delete Pod:{self.pod_name_list[0]}')
         action.delete_docker(self.pod_name_list[0])
