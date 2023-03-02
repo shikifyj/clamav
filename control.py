@@ -194,27 +194,28 @@ class AntiVirus(object):
             files_list = []
             virus_list = []
             print_table = utils.Table()
-
+            logger.write_to_log('WARNING',
+                                f'[{pod_id}]Scan summary-Task：Infected files:{infected_files[0]},'
+                                f'Scanned directories:{scanned_directories[0]},'
+                                f'Scanned files:{scanned_files[0]},'
+                                f'Data scanned:{data_scanned[0]},'
+                                f'Time:{all_time[0]},'
+                                f'Start Date:{start_date2},'
+                                f'End Date:{end_date2}', True)
+            print('------------------------------------SCAN SUMMARY----------------------------------------')
+            print(f'WARNING: Scan summary- {infected_files[0]} infected files found')
+            print(
+                f'Scan summary-Virus database:Known viruses:{known_viruses[0]},Engine version:{engine_version[0]}')
+            print(
+                f'Scan summary-Task:{scanned_directories[0]} directories scanned,{scanned_files[0]} files scanned,'
+                f'Data scanned:{data_scanned[0]},Time:{all_time[0]},Start Date:{start_date2},End Date:{end_date2}')
+            print('infected files list:')
             for i in range(len(file_list)):
-                logger.write_to_log('WARNING',
-                                    f'[{pod_id}]Scan summary-Task：Infected files:{infected_files[0]},'
-                                    f'Scanned directories:{scanned_directories[0]},'
-                                    f'Scanned files:{scanned_files[0]},'
-                                    f'Data scanned:{data_scanned[0]},'
-                                    f'Time:{all_time[0]},'
-                                    f'Start Date:{start_date2},'
-                                    f'End Date:{end_date2}', True)
-                print(f'WARNING: Scan summary- {infected_files[0]} infected files found')
-                print(
-                    f'Scan summary-Virus database:Known viruses:{known_viruses[0]},Engine version:{engine_version[0]}')
-                print(
-                    f'Scan summary-Task:{scanned_directories[0]} directories scanned,{scanned_files[0]} files scanned,'
-                    f'Data scanned:{data_scanned[0]},Time:{all_time[0]},Start Date:{start_date2},End Date:{end_date2}')
-                print('infected files list:')
                 files_list.append(re.findall(r'/scan.*:', file_list[i])[0].strip(':'))
                 virus_list.append(re.findall(r':\s[A-Za-z]+-[A-Za-z]+', file_list[i])[0].strip(':'))
                 print_table.add_data([f'{files_list[i]}', f'{virus_list[i]}'])
-                print_table.print_table()
+            print_table.print_table()
+            print('---------------------------------------------------------------------------------------')
         else:
             logger.write_to_log('INFO',
                                 f'[{pod_id}]Scan summary-Task：Infected files:{infected_files[0]},'
@@ -237,11 +238,11 @@ class AntiVirus(object):
                 logger.write_to_log('INFO', f'[{pod_id}]Delete infected files:{files}', True)
                 print(f'{files} deleted successfully')
                 logger.write_to_log('INFO', f'[{pod_id}]{files} deleted successfully', True)
-        print(f'Delete Pod:{self.pod_name_list[0]}')
+        # print(f'Delete Pod:{self.pod_name_list[0]}')
         logger.write_to_log('INFO', f'[{pod_id}]Delete Pod:{self.pod_name_list[0]}')
         action.delete_docker(self.pod_name_list[0])
         logger.write_to_log('INFO', f'[{pod_id}]{self.pod_name_list[0]} deleted successfully')
-        print(f'Delete yaml:{self.filename}.yaml')
+        # print(f'Delete yaml:{self.filename}.yaml')
         logger.write_to_log('INFO', f'[{pod_id}]Delete yaml:{self.filename}.yaml')
         action.delete_yaml(self.filename)
         logger.write_to_log('INFO', f'[{pod_id}]{self.filename}.yaml deleted successfully')
