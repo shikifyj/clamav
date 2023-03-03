@@ -44,3 +44,8 @@ def get_pid(pod_name):
 def delete_yaml(file_name):
     cmd = f'rm {YAML_PATH}/{file_name}.yaml'
     utils.exec_cmd(cmd)
+
+# def lsblk(volume):
+#     cmd = f'lsblk | grep {volume}'
+#     result = utils.exec_cmd(cmd)
+#     volume_path =
