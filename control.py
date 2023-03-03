@@ -168,6 +168,7 @@ class AntiVirus(object):
             if i >= 0:
                 file1 = re.findall(r'/scan.*:', file_list[i])[0].strip(':').replace('/scan', '')
                 if self.claimname ==None:
+                    pod_id = pod_id.strip("'")
                     logger.write_to_log('WARNING', f'{[pod_id]}Infected files:{self.filepath}{file1}', True)
                 else:
                     logger.write_to_log('WARNING', f'{[pod_id]}Infected files:{self.claimname}{file1}', True)
@@ -238,7 +239,7 @@ class AntiVirus(object):
             if i >= 0 and remove == ' --remove':
                 files = re.findall(r'/scan.*:', file_list[i])[0].strip(':').replace('/scan', '')
                 print(f'Delete infected files:{files}')
-                logger.write_to_log('INFO', f'[{pod_id}]Delete infected files:{files}', True)
+                logger.write_to_log('INFO', f"[{pod_id}]Delete infected files:{files}", True)
                 print(f'{files} deleted successfully')
                 logger.write_to_log('INFO', f'[{pod_id}]{files} deleted successfully', True)
         # print(f'Delete Pod:{self.pod_name_list[0]}')
