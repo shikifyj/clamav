@@ -106,16 +106,19 @@ def wh_interface(Time, Workspace, Reason, AuditResType, ResName, SourceIPs, LogL
 
     }
     data = json.dumps(data)
-    print(data)
+    # print(data)
     err_signal = True
     for i in range(10):
         try:
             response = requests.post(url, headers=headers, verify=False, data=data)
             # print(response)
-            print('Data was written successfully')
+            # print('Data was written successfully')
             err_signal = False
             break
         except:
             time.sleep(2)
     if err_signal:
-        print('Tried to rewrite the data 10 times, but the data write failed!')
+        return err_signal
+        # print('Tried to rewrite the data 10 times, but the data write failed!')
+
+

@@ -172,8 +172,11 @@ class Log(object):
             resa = self.auditobj
             sourceIPa = self.hostip
             loglevela = level
-            webhook.wh_interface(Time=timea, Workspace=workspacea, Reason=infoa, AuditResType=typea, ResName=resa,
+            result = webhook.wh_interface(Time=timea, Workspace=workspacea, Reason=infoa, AuditResType=typea, ResName=resa,
                                  SourceIPs=sourceIPa, LogLevel=loglevela)
+            if result:
+                logger = Log()
+                logger.write_to_log("ERR", f"Tried to rewrite the data 10 times, but the data write failed!", False)
 
 class ConfFile(object):
     def __init__(self, file_path):
