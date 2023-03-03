@@ -167,11 +167,12 @@ class AntiVirus(object):
         for i in range(len(file_list)):
             if i >= 0:
                 file1 = re.findall(r'/scan.*:', file_list[i])[0].strip(':').replace('/scan', '')
-                if self.claimname ==None:
-                    pod_id = pod_id.strip("'")
-                    logger.write_to_log('WARNING', f'{[pod_id]}Infected files:{self.filepath}{file1}', True)
+                if self.claimname == None:
+                    str2 = f'{[pod_id]}Infected files:{self.filepath}{file1}'.strip("'")
+                    logger.write_to_log('WARNING', f'{str2}', True)
                 else:
-                    logger.write_to_log('WARNING', f'{[pod_id]}Infected files:{self.claimname}{file1}', True)
+                    str1 = f'{[pod_id]}Infected files:{self.claimname}{file1}'.strip("'")
+                    logger.write_to_log('WARNING', f'{str1}', True)
             else:
                 pass
         known_viruses = re.findall(r'Known\s*viruses:\s*([0-9]+)', result)
