@@ -166,11 +166,11 @@ class AntiVirus(object):
         file_list = re.findall(r'\/scan.*FOUND', result)
         for i in range(len(file_list)):
             if i >= 0:
-                file1=re.findall(r'/scan.*:', file_list[i])[0].strip('/scan:')
+                file1 = re.findall(r'/scan.*:', file_list[i])[0].strip(':').replace('/scan', '')
                 if self.claimname ==None:
-                    logger.write_to_log('WARNING', f'{[pod_id]}Infected files:{self.filepath}/{file1[0]}', True)
+                    logger.write_to_log('WARNING', f'{[pod_id]}Infected files:{self.filepath}{file1}', True)
                 else:
-                    logger.write_to_log('WARNING', f'{[pod_id]}Infected files:{self.claimname}/{file1[0]}', True)
+                    logger.write_to_log('WARNING', f'{[pod_id]}Infected files:{self.claimname}{file1}', True)
             else:
                 pass
         known_viruses = re.findall(r'Known\s*viruses:\s*([0-9]+)', result)
@@ -236,7 +236,7 @@ class AntiVirus(object):
                 f'Data scanned:{data_scanned[0]},Time:{all_time[0]},Start Date:{start_date2},End Date:{end_date2}')
         for i in range(len(file_list)):
             if i >= 0 and remove == ' --remove':
-                files = file_list[i].strip(': Eicar-Signature FOUND')
+                files = re.findall(r'/scan.*:', file_list[i])[0].strip(':').replace('/scan', '')
                 print(f'Delete infected files:{files}')
                 logger.write_to_log('INFO', f'[{pod_id}]Delete infected files:{files}', True)
                 print(f'{files} deleted successfully')
