@@ -49,7 +49,7 @@ class AntiVirus(object):
                               }
                      }
         action.create_yaml(self.filename, dict_yaml)
-        # print(f'Create yaml files：{self.filename}.yaml')
+        print(f'Create yaml files：{self.filename}.yaml')
         logger.write_to_log("INFO", f'Create yaml files：{self.filename}.yaml')
         try:
             with open(os.getcwd() + f'/{self.filename}.yaml') as f:
@@ -66,11 +66,11 @@ class AntiVirus(object):
             sys.exit()
         with open(os.getcwd() + f'/{self.filename}.yaml', 'w', encoding='utf-8') as f:
             yaml.dump(doc, f)
-        # print(f'Create pod: clamb-{self.claimname}')
+        print(f'Create pod: clamb-{self.claimname}')
         action.create_pod(f'{self.filename}.yaml')
         logger.write_to_log("INFO", f"Create pod: clamb-{self.claimname}")
         time.sleep(12)
-        print(f'Check Pod: clamb-{self.claimname} status')
+        print(f'Check clamb-{self.claimname} status')
         result = action.check_pod(f'clamb-{self.claimname}')
         status = re.findall(fr'clamb-{self.claimname}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
         if status[0] == 'Running':
@@ -81,7 +81,7 @@ class AntiVirus(object):
             self.scan_directory_list.append(f'/scan')
             self.container_name_list.append(f'clamb-{self.claimname}')
         else:
-            action.delete_docker(f'clamb-{self.claimname}')
+            # action.delete_docker(f'clamb-{self.claimname}')
             print(f'WARNING:Please check clamb-{self.claimname} status,{self.claimname} stop disinfection')
             logger.write_to_log('WARNING',
                                 f'Please check clamb-{self.claimname} status,{self.claimname} stop disinfection')
@@ -110,8 +110,8 @@ class AntiVirus(object):
                               }
                      }
         action.create_yaml(self.filename, dict_yaml)
-        # print(f'Create yaml for Pod：{self.filename}.yaml')
-        logger.write_to_log("INFO", f'Create yaml：{self.filename}.yaml')
+        print(f'Create yaml for Pod：{self.filename}.yaml')
+        logger.write_to_log("INFO", f'Create yaml for Pod：{self.filename}.yaml')
         try:
             with open(os.getcwd() + f'/{self.filename}.yaml') as f:
                 doc = yaml.load(f, Loader=yaml.FullLoader)
@@ -127,11 +127,11 @@ class AntiVirus(object):
             sys.exit()
         with open(os.getcwd() + f'/{self.filename}.yaml', 'w', encoding='utf-8') as f:
             yaml.dump(doc, f)
-        # print(f'Create pod: clamb-{self.filepath}')
+        print(f'Create pod: clamb-{self.filepath}')
         action.create_pod(f'{self.filename}.yaml')
         logger.write_to_log("INFO", f"Create pod: clamb-{self.filepath}")
         time.sleep(12)
-        print(f'Check Pod:clamb-{self.filepath} status')
+        print(f'Check clamb-{self.filepath} status')
         result = action.check_pod(f'clamb-{self.filepath}')
         status = re.findall(fr'clamb-{self.filepath}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
         if status[0] == 'Running':
@@ -166,13 +166,8 @@ class AntiVirus(object):
         file_list = re.findall(r'\/scan.*FOUND', result)
         for i in range(len(file_list)):
             if i >= 0:
-                file1 = re.findall(r'/scan.*:', file_list[i])[0].strip(':').replace('/scan', '')
-                if self.claimname == None:
-                    str2 = f'{[pod_id]}Infected files:{self.filepath}{file1}'.strip("'")
-                    logger.write_to_log('WARNING', f'{str2}', True)
-                else:
-                    str1 = f'{[pod_id]}Infected files:{self.claimname}{file1}'.strip("'")
-                    logger.write_to_log('WARNING', f'{str1}', True)
+                file1 = file_list[i].strip(': Eicar-Signature FOUND')
+                logger.write_to_log('WARNING', f'{[pod_id]}Infected files:{file1}', True)
             else:
                 pass
         known_viruses = re.findall(r'Known\s*viruses:\s*([0-9]+)', result)
@@ -238,9 +233,9 @@ class AntiVirus(object):
                 f'Data scanned:{data_scanned[0]},Time:{all_time[0]},Start Date:{start_date2},End Date:{end_date2}')
         for i in range(len(file_list)):
             if i >= 0 and remove == ' --remove':
-                files = re.findall(r'/scan.*:', file_list[i])[0].strip(':').replace('/scan', '')
+                files = file_list[i].strip(': Eicar-Signature FOUND')
                 print(f'Delete infected files:{files}')
-                logger.write_to_log('INFO', f"[{pod_id}]Delete infected files:{files}", True)
+                logger.write_to_log('INFO', f'[{pod_id}]Delete infected files:{files}', True)
                 print(f'{files} deleted successfully')
                 logger.write_to_log('INFO', f'[{pod_id}]{files} deleted successfully', True)
         # print(f'Delete Pod:{self.pod_name_list[0]}')
