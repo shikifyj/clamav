@@ -13,7 +13,7 @@ import prettytable
 from datetime import datetime
 
 LOG_PATH = os.getcwd() + '/Anti_virus.log'
-AUDIT_2_WEBHOOK = False
+AUDIT_2_WEBHOOK = True
 
 def exec_cmd(cmd, timeout=300):
     p = subprocess.Popen(cmd, stderr=subprocess.STDOUT,
