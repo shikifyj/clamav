@@ -133,7 +133,7 @@ class AntiVirus(object):
         logger.write_to_log("INFO", f"Create pod:{pod_name}")
         time.sleep(12)
         print(f'Check Pod:{pod_name} status')
-        result = action.check_pod(f'clamb-{self.filepath}')
+        result = action.check_pod(f'{pod_name}')
         status = re.findall(fr'{pod_name}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
         if status[0] == 'Running':
             pod_id = action.get_pid(f'{pod_name}')
