@@ -72,8 +72,8 @@ class AntiVirus(object):
         result = action.check_pod(f'clamb-{self.claimname}')
         if result:
             node = re.findall(r'\.[0-9]+\s+([\w]+)\s', result)
-            print(f"Pod:clamb-{self.claimname} run in {node[0]}")
-            logger.write_to_log("INFO", f"Pod:clamb-{self.claimname} run in {node[0]}")
+            print(f"Pod:clamb-{self.claimname} run on {node[0]}")
+            logger.write_to_log("INFO", f"Pod:clamb-{self.claimname} run on {node[0]}")
             print(f'Check Pod: clamb-{self.claimname} status')
             status = re.findall(fr'clamb-{self.claimname}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
             if status[0] == 'Running':
@@ -144,8 +144,8 @@ class AntiVirus(object):
         result = action.check_pod(f'{pod_name}')
         if result:
             node = re.findall(r'\.[0-9]+\s+([\w]+)\s', result)
-            print(f"Pod:{pod_name} run in {node[0]}")
-            logger.write_to_log("INFO", f"Pod:{pod_name} run in {node[0]}")
+            print(f"Pod:{pod_name} run on {node[0]}")
+            logger.write_to_log("INFO", f"Pod:{pod_name} run on {node[0]}")
             print(f'Check Pod:{pod_name} status')
             status = re.findall(fr'{pod_name}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
             if status[0] == 'Running':
