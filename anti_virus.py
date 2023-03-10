@@ -25,12 +25,12 @@ class InputParser(object):
         self.scan.add_argument('-f',
                                '--filepath',
                                dest='filepath',
-                               help='Directory to scan',
+                               help='Scan the directory',
                                action='store')
         self.scan.add_argument('-p',
                                '--volumes',
                                dest='volumes',
-                               help='Pvc to scan',
+                               help='Scan the PVC',
                                action='store')
         self.scan.add_argument('-r',
                                '--remove',
