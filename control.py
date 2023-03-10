@@ -71,7 +71,7 @@ class AntiVirus(object):
         time.sleep(12)
         result = action.check_pod(f'clamb-{self.claimname}')
         if result:
-            node = re.findall(fr'clamb-{self.claimname}+\s*\d*/\d*\s*([a-zA-Z]*)\s*[0-9]\s*[0-9]*[a-z]\s*[0-9]+.[0-9]+.[0-9]+.[0-9]+\s', result)
+            node = re.findall(r'\.[0-9]+\s+([\w]+)\s', result)
             print(f"Pod:clamb-{self.claimname} run in {node[0]}")
             logger.write_to_log("INFO", f"Pod:clamb-{self.claimname} run in {node[0]}")
             print(f'Check Pod: clamb-{self.claimname} status')
@@ -143,7 +143,7 @@ class AntiVirus(object):
         time.sleep(12)
         result = action.check_pod(f'{pod_name}')
         if result:
-            node = re.findall(fr'{pod_name}+\s*\d*/\d*\s*([a-zA-Z]*)\s*[0-9]\s*[0-9]*[a-z]\s*[0-9]+.[0-9]+.[0-9]+.[0-9]+\s', result)
+            node = re.findall(r'\.[0-9]+\s+([\w]+)\s', result)
             print(f"Pod:{pod_name} run in {node[0]}")
             logger.write_to_log("INFO", f"Pod:{pod_name} run in {node[0]}")
             print(f'Check Pod:{pod_name} status')
@@ -188,10 +188,10 @@ class AntiVirus(object):
             if i >= 0:
                 file1 = re.findall(r'/scan.*:', file_list[i])[0].strip(':').replace('/scan', '')
                 if self.claimname == None:
-                    str2 = f'{[pod_id]}Infected files:{self.filepath}{file1}'.strip("'")
+                    str2 = f'{[pod_id]}Infected files:{self.filepath}{file1}'.replace("'", '')
                     logger.write_to_log('WARNING', f'{str2}', True)
                 else:
-                    str1 = f'{[pod_id]}Infected files:{self.claimname}{file1}'.strip("'")
+                    str1 = f'{[pod_id]}Infected files:{self.claimname}{file1}'.replace("'", '')
                     logger.write_to_log('WARNING', f'{str1}', True)
             else:
                 pass
