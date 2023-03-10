@@ -3,6 +3,8 @@ import json
 import random
 import string
 import time
+import urllib3
+import urllib3.exceptions
 
 url = 'https://kube-auditing-webhook-svc.kubesphere-logging-system.svc:6443/audit/webhook/event'
 
@@ -110,6 +112,7 @@ def wh_interface(Time, Workspace, Reason, AuditResType, ResName, SourceIPs, LogL
     err_signal = True
     for i in range(10):
         try:
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
             response = requests.post(url, headers=headers, verify=False, data=data)
             # print(response)
             # print('Data was written successfully')
@@ -118,7 +121,7 @@ def wh_interface(Time, Workspace, Reason, AuditResType, ResName, SourceIPs, LogL
         except:
             time.sleep(2)
     if err_signal:
-        return err_signal
-        # print('Tried to rewrite the data 10 times, but the data write failed!')
+        print('Tried to rewrite the data 10 times, but the data write failed!')
+
 
 
