@@ -85,7 +85,7 @@ class AntiVirus(object):
                 self.container_name_list.append(f'clamb-{self.claimname}')
             else:
                 action.delete_docker(f'clamb-{self.claimname}')
-                print(f'WARNING:Please check Pod:clamb-{self.claimname} status,{self.claimname} stop scan')
+                print(f'WARNING:Pod:clamb-{self.claimname} status is {status[0]},{self.claimname} stop to scan')
                 logger.write_to_log('WARNING',
                                     f'Because Pod:clamb-{self.claimname} status exception,'
                                     f'PVC:{self.claimname} scan failed', True)
@@ -157,7 +157,7 @@ class AntiVirus(object):
                 self.container_name_list.append(f'{pod_name}')
             else:
                 action.delete_docker(f'clamb-{self.filepath}')
-                print(f'WARNING:Please check Pod:{pod_name} status,{self.filepath} stop scan')
+                print(f'WARNING:Pod:{pod_name} status is {status[0]},{self.filepath} stop to scan')
                 logger.write_to_log('WARNING',
                                     f'Because Pod:{pod_name} status exception,'
                                     f'{self.filepath} scan failed', True)
