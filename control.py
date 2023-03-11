@@ -66,17 +66,17 @@ class AntiVirus(object):
             sys.exit()
         with open(os.getcwd() + f'/{self.filename}.yaml', 'w', encoding='utf-8') as f:
             yaml.dump(doc, f)
-        action.create_pod(f'{self.filename}.yaml')
+        pod_status = action.create_pod(f'{self.filename}.yaml')
         logger.write_to_log("INFO", f"Create pod: clamb-{self.claimname}")
         time.sleep(12)
         result = action.check_pod(f'clamb-{self.claimname}')
-        if result:
-            node = re.findall(r'\.[0-9]+\s+([\w]+)\s', result)
-            print(f"Pod:clamb-{self.claimname} run on {node[0]}")
-            logger.write_to_log("INFO", f"Pod:clamb-{self.claimname} run on {node[0]}")
+        if 'created' in pod_status:
             print(f'Check Pod: clamb-{self.claimname} status')
             status = re.findall(fr'clamb-{self.claimname}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
             if status[0] == 'Running':
+                node = re.findall(r'\.[0-9]+\s+([\w]+)\s', result)
+                print(f"Pod:clamb-{self.claimname} run on {node[0]}")
+                logger.write_to_log("INFO", f"Pod:clamb-{self.claimname} run on {node[0]}")
                 print(f'clamb-{self.claimname} is Running')
                 pod_id = action.get_pid(f'clamb-{self.claimname}')
                 logger.write_to_log('INFO', f'[{pod_id}]clamb-{self.claimname} is Running, containerID is [{pod_id}]')
@@ -138,17 +138,17 @@ class AntiVirus(object):
         with open(os.getcwd() + f'/{self.filename}.yaml', 'w', encoding='utf-8') as f:
             yaml.dump(doc, f)
         # print(f'Create pod: clamb-{self.filepath}')
-        action.create_pod(f'{self.filename}.yaml')
+        pod_status = action.create_pod(f'{self.filename}.yaml')
         logger.write_to_log("INFO", f"Create pod:{pod_name}")
         time.sleep(12)
         result = action.check_pod(f'{pod_name}')
-        if result:
-            node = re.findall(r'\.[0-9]+\s+([\w]+)\s', result)
-            print(f"Pod:{pod_name} run on {node[0]}")
-            logger.write_to_log("INFO", f"Pod:{pod_name} run on {node[0]}")
+        if 'created' in pod_status:
             print(f'Check Pod:{pod_name} status')
             status = re.findall(fr'{pod_name}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
             if status[0] == 'Running':
+                node = re.findall(r'\.[0-9]+\s+([\w]+)\s', result)
+                print(f"Pod:{pod_name} run on {node[0]}")
+                logger.write_to_log("INFO", f"Pod:{pod_name} run on {node[0]}")
                 pod_id = action.get_pid(f'{pod_name}')
                 print(f'{pod_name} is Running')
                 logger.write_to_log('INFO', f'[{pod_id}]{pod_name} is Running,containerID is [{pod_id}]')
