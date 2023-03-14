@@ -45,6 +45,12 @@ def delete_yaml(file_name):
     cmd = f'rm {YAML_PATH}/{file_name}.yaml'
     utils.exec_cmd(cmd)
 
+
+def get_node():
+    cmd = f'kubectl get node'
+    result = utils.exec_cmd(cmd)
+    return result
+
 # def lsblk(volume):
 #     cmd = f'lsblk | grep {volume}'
 #     result = utils.exec_cmd(cmd)

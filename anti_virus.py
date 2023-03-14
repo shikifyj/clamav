@@ -22,6 +22,11 @@ class InputParser(object):
                                  help='Show current version',
                                  action='store_true')
         self.scan = subp.add_parser("virus_scan", aliases=['v'], help="Scan virus")
+        self.scan.add_argument('-n',
+                               '--nodeName',
+                               dest='nodeName',
+                               required=True,
+                               action='store')
         self.scan.add_argument('-f',
                                '--filepath',
                                dest='filepath',
@@ -42,9 +47,9 @@ class InputParser(object):
 
     def scan_func(self, args):
         if args.filepath:
-            control.AntiVirus(filepath=args.filepath, remove=args.remove)
+            control.AntiVirus(filepath=args.filepath, remove=args.remove, node_name=args.nodeName)
         elif args.volumes:
-            control.AntiVirus(claimname=args.volumes, remove=args.remove)
+            control.AntiVirus(claimname=args.volumes, remove=args.remove, node_name=args.nodeName)
 
     def help_usage(self, args):
         if args.version:

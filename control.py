@@ -10,7 +10,7 @@ logger = utils.Log()
 
 
 class AntiVirus(object):
-    def __init__(self, remove, claimname=None, filepath=None):
+    def __init__(self, remove, claimname=None, filepath=None, node_name=None):
         if remove:
             remove = ' --remove'
         else:
@@ -20,6 +20,7 @@ class AntiVirus(object):
         self.scan_directory_list = []
         self.claimname = claimname
         self.filepath = filepath
+        self.node_name = node_name
         self.filename = f'config_{int(round(time.time() * 1000))}'
         if claimname == None:
             self.mount_docker_file()
@@ -32,7 +33,8 @@ class AntiVirus(object):
         dict_yaml = {'apiVersion': 'v1',
                      'kind': 'Pod',
                      'metadata': {'name': 'clamav3'},
-                     'spec': {'containers': [{'name': 'clamav3',
+                     'spec': {'nodeName': '',
+                              'containers': [{'name': 'clamav3',
                                               'image': 'feixite/clamav:2.0',
                                               'ports': [{'containerPort': 9009}],
                                               'volumeMounts': [{'name': 'logs-volume',
@@ -48,59 +50,71 @@ class AntiVirus(object):
                                           ]
                               }
                      }
-        action.create_yaml(self.filename, dict_yaml)
-        # print(f'Create yaml files:{self.filename}.yaml')
-        logger.write_to_log("INFO", f'Create yaml files:{self.filename}.yaml')
-        try:
-            with open(os.getcwd() + f'/{self.filename}.yaml') as f:
-                doc = yaml.load(f, Loader=yaml.FullLoader)
-                doc['metadata']['name'] = f'clamb-{self.claimname}'
-                doc['spec']['containers'][0]['name'] = f'clamb-{self.claimname}'
-                doc['spec']['containers'][0]['volumeMounts'][0]['mountPath'] = f'/scan'
-                doc['spec']['volumes'][0]['persistentVolumeClaim']['claimName'] = self.claimname
-                logger.write_to_log('INFO',
-                                    f'{self.filename}.yaml created successfully,volume_mount_path:/scan,claimName:{self.claimname}')
-        except FileNotFoundError:
-            print(f'WARNING:{self.filename}.yaml created failed')
-            logger.write_to_log('WARNING', f'{self.filename}.yaml created failed')
-            sys.exit()
-        with open(os.getcwd() + f'/{self.filename}.yaml', 'w', encoding='utf-8') as f:
-            yaml.dump(doc, f)
-        pod_status = action.create_pod(f'{self.filename}.yaml')
-        logger.write_to_log("INFO", f"Create pod: clamb-{self.claimname}")
-        time.sleep(12)
-        result = action.check_pod(f'clamb-{self.claimname}')
-        if 'created' in pod_status:
-            print(f'Check Pod: clamb-{self.claimname} status')
-            status = re.findall(fr'clamb-{self.claimname}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
-            if status[0] == 'Running':
-                node = re.findall(r'\.[0-9]+\s+([\w]+)\s', result)
-                print(f"Pod:clamb-{self.claimname} run on {node[0]}")
-                logger.write_to_log("INFO", f"Pod:clamb-{self.claimname} run on {node[0]}")
-                print(f'clamb-{self.claimname} is Running')
-                pod_id = action.get_pid(f'clamb-{self.claimname}')
-                logger.write_to_log('INFO', f'[{pod_id}]clamb-{self.claimname} is Running, containerID is [{pod_id}]')
-                self.pod_name_list.append(f'clamb-{self.claimname}')
-                self.scan_directory_list.append(f'/scan')
-                self.container_name_list.append(f'clamb-{self.claimname}')
+        node_result = action.get_node()
+        if self.node_name in node_result:
+            action.create_yaml(self.filename, dict_yaml)
+            # print(f'Create yaml files:{self.filename}.yaml')
+            logger.write_to_log("INFO", f'Create yaml files:{self.filename}.yaml')
+            try:
+                with open(os.getcwd() + f'/{self.filename}.yaml') as f:
+                    doc = yaml.load(f, Loader=yaml.FullLoader)
+                    doc['metadata']['name'] = f'clamb-{self.claimname}'
+                    doc['spec']['containers'][0]['name'] = f'clamb-{self.claimname}'
+                    doc['spec']['containers'][0]['volumeMounts'][0]['mountPath'] = f'/scan'
+                    doc['spec']['volumes'][0]['persistentVolumeClaim']['claimName'] = self.claimname
+                    doc['spec']['nodeName'] = self.node_name
+                    logger.write_to_log('INFO',
+                                        f'{self.filename}.yaml created successfully,volume_mount_path:/scan,'
+                                        f'claimName:{self.claimname}')
+            except FileNotFoundError:
+                print(f'WARNING:{self.filename}.yaml created failed')
+                logger.write_to_log('WARNING', f'{self.filename}.yaml created failed')
+                sys.exit()
+            with open(os.getcwd() + f'/{self.filename}.yaml', 'w', encoding='utf-8') as f:
+                yaml.dump(doc, f)
+            pod_status = action.create_pod(f'{self.filename}.yaml')
+            logger.write_to_log("INFO", f"Create pod: clamb-{self.claimname}")
+            time.sleep(12)
+            result = action.check_pod(f'clamb-{self.claimname}')
+            if 'created' in pod_status:
+                print(f'Check Pod: clamb-{self.claimname} status')
+                status = re.findall(fr'clamb-{self.claimname}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
+                if status[0] == 'Running':
+                    node = re.findall(r'\.[0-9]+\s+([\w]+)\s', result)
+                    print(f"Pod:clamb-{self.claimname} run on {node[0]}")
+                    logger.write_to_log("INFO", f"Pod:clamb-{self.claimname} run on {node[0]}")
+                    print(f'clamb-{self.claimname} is Running')
+                    pod_id = action.get_pid(f'clamb-{self.claimname}')
+                    logger.write_to_log('INFO',
+                                        f'[{pod_id}]clamb-{self.claimname} is Running, containerID is [{pod_id}]')
+                    self.pod_name_list.append(f'clamb-{self.claimname}')
+                    self.scan_directory_list.append(f'/scan')
+                    self.container_name_list.append(f'clamb-{self.claimname}')
+                else:
+                    action.delete_docker(f'clamb-{self.claimname}')
+                    print(f'WARNING:Pod:clamb-{self.claimname} status is {status[0]},{self.claimname} stop to scan')
+                    logger.write_to_log('WARNING',
+                                        f'Because Pod:clamb-{self.claimname} status is {status[0]},'
+                                        f'PVC:{self.claimname} scan failed', True)
+                    sys.exit()
             else:
-                action.delete_docker(f'clamb-{self.claimname}')
-                print(f'WARNING:Pod:clamb-{self.claimname} status is {status[0]},{self.claimname} stop to scan')
-                logger.write_to_log('WARNING',
-                                    f'Because Pod:clamb-{self.claimname} status is {status[0]},'
-                                    f'PVC:{self.claimname} scan failed', True)
+                print(f'WARING:Pod:clamb-{self.claimname} created failed')
+                logger.write_to_log("WARING", f"Because Pod:clamb-{self.claimname} created failed,"
+                                              f"PVC:{self.claimname} scan failed", True)
                 sys.exit()
         else:
-            print(f'WARING:Pod:clamb-{self.claimname} created failed')
-            logger.write_to_log("WARING", f"Because Pod:clamb-{self.claimname} created failed,"
-                                          f"PVC:{self.claimname} scan failed", True)
+            print(f'WARING:The node:{self.node_name} does not exist, please respecify the node')
+            logger.write_to_log('WARNING',
+                                f'The node:{self.node_name} does not exist,'
+                                f'PVC:{self.claimname} scan failed', True)
             sys.exit()
 
     def mount_docker_file(self):
         dict_yaml = {'apiVersion': 'v1',
                      'kind': 'Pod',
                      'metadata': {'name': 'clamav3'},
-                     'spec': {'containers': [{'name': 'clamav3',
+                     'spec': {'nodeName': '',
+                              'containers': [{'name': 'clamav3',
                                               'image': 'feixitek/clamav:2.0',
                                               'ports': [{'containerPort': 9009}],
                                               'volumeMounts': [{'name': 'logs-volume',
@@ -118,54 +132,64 @@ class AntiVirus(object):
                                           ]
                               }
                      }
-        action.create_yaml(self.filename, dict_yaml)
-        # print(f'Create yaml for Pod:{self.filename}.yaml')
-        logger.write_to_log("INFO", f'Create yaml:{self.filename}.yaml')
-        pod_name = f'clamb-{self.filepath}'.replace('/', '-')
-        try:
-            with open(os.getcwd() + f'/{self.filename}.yaml') as f:
-                doc = yaml.load(f, Loader=yaml.FullLoader)
-                doc['metadata']['name'] = pod_name
-                doc['spec']['containers'][0]['name'] = pod_name
-                doc['spec']['containers'][0]['volumeMounts'][0]['mountPath'] = f'/scan'
-                doc['spec']['volumes'][0]['hostPath']['path'] = self.filepath
-                logger.write_to_log('INFO',
-                                    f'{self.filename}.yaml created successfully,volume_mount_path:/scan,volumes_path:{self.filepath}')
-        except FileNotFoundError:
-            print(f'WARNING:{self.filename}.yaml created failed')
-            logger.write_to_log('WARNING', f'{self.filename}.yaml created failed')
-            sys.exit()
-        with open(os.getcwd() + f'/{self.filename}.yaml', 'w', encoding='utf-8') as f:
-            yaml.dump(doc, f)
-        # print(f'Create pod: clamb-{self.filepath}')
-        pod_status = action.create_pod(f'{self.filename}.yaml')
-        logger.write_to_log("INFO", f"Create pod:{pod_name}")
-        time.sleep(12)
-        result = action.check_pod(f'{pod_name}')
-        if 'created' in pod_status:
-            print(f'Check Pod:{pod_name} status')
-            status = re.findall(fr'{pod_name}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
-            if status[0] == 'Running':
-                node = re.findall(r'\.[0-9]+\s+([\w]+)\s', result)
-                print(f"Pod:{pod_name} run on {node[0]}")
-                logger.write_to_log("INFO", f"Pod:{pod_name} run on {node[0]}")
-                pod_id = action.get_pid(f'{pod_name}')
-                print(f'{pod_name} is Running')
-                logger.write_to_log('INFO', f'[{pod_id}]{pod_name} is Running,containerID is [{pod_id}]')
-                self.pod_name_list.append(f'{pod_name}')
-                self.scan_directory_list.append(f'/scan')
-                self.container_name_list.append(f'{pod_name}')
+        node_result = action.get_node()
+        if self.node_name in node_result:
+            action.create_yaml(self.filename, dict_yaml)
+            # print(f'Create yaml for Pod:{self.filename}.yaml')
+            logger.write_to_log("INFO", f'Create yaml:{self.filename}.yaml')
+            pod_name = f'clamb{self.filepath}'.replace('/', '-')
+            try:
+                with open(os.getcwd() + f'/{self.filename}.yaml') as f:
+                    doc = yaml.load(f, Loader=yaml.FullLoader)
+                    doc['metadata']['name'] = pod_name
+                    doc['spec']['containers'][0]['name'] = pod_name
+                    doc['spec']['containers'][0]['volumeMounts'][0]['mountPath'] = f'/scan'
+                    doc['spec']['volumes'][0]['hostPath']['path'] = self.filepath
+                    doc['spec']['nodeName'] = self.node_name
+                    logger.write_to_log('INFO',
+                                        f'{self.filename}.yaml created successfully,volume_mount_path:/scan,'
+                                        f'volumes_path:{self.filepath}')
+            except FileNotFoundError:
+                print(f'WARNING:{self.filename}.yaml created failed')
+                logger.write_to_log('WARNING', f'{self.filename}.yaml created failed')
+                sys.exit()
+            with open(os.getcwd() + f'/{self.filename}.yaml', 'w', encoding='utf-8') as f:
+                yaml.dump(doc, f)
+            # print(f'Create pod: clamb-{self.filepath}')
+            pod_status = action.create_pod(f'{self.filename}.yaml')
+            logger.write_to_log("INFO", f"Create pod:{pod_name}")
+            time.sleep(12)
+            result = action.check_pod(f'{pod_name}')
+            if 'created' in pod_status:
+                print(f'Check Pod:{pod_name} status')
+                status = re.findall(fr'{pod_name}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
+                if status[0] == 'Running':
+                    node = re.findall(r'\.[0-9]+\s+([\w]+)\s', result)
+                    print(f"Pod:{pod_name} run on {node[0]}")
+                    logger.write_to_log("INFO", f"Pod:{pod_name} run on {node[0]}")
+                    pod_id = action.get_pid(f'{pod_name}')
+                    print(f'{pod_name} is Running')
+                    logger.write_to_log('INFO', f'[{pod_id}]{pod_name} is Running,containerID is [{pod_id}]')
+                    self.pod_name_list.append(f'{pod_name}')
+                    self.scan_directory_list.append(f'/scan')
+                    self.container_name_list.append(f'{pod_name}')
+                else:
+                    action.delete_docker(f'clamb-{self.filepath}')
+                    print(f'WARNING:Pod:{pod_name} status is {status[0]},{self.filepath} stop to scan')
+                    logger.write_to_log('WARNING',
+                                        f'Because Pod:{pod_name} status is {status[0]},'
+                                        f'{self.filepath} scan failed', True)
+                    sys.exit()
             else:
-                action.delete_docker(f'clamb-{self.filepath}')
-                print(f'WARNING:Pod:{pod_name} status is {status[0]},{self.filepath} stop to scan')
-                logger.write_to_log('WARNING',
-                                    f'Because Pod:{pod_name} status is {status[0]},'
-                                    f'{self.filepath} scan failed', True)
+                print(f'WARING:Pod:{pod_name} created failed')
+                logger.write_to_log("WARING", f"Because Pod:{pod_name} created failed,"
+                                              f"{self.filepath} scan failed", True)
                 sys.exit()
         else:
-            print(f'WARING:Pod:{pod_name} created failed')
-            logger.write_to_log("WARING", f"Because Pod:-{pod_name} created failed,"
-                                          f"{self.filepath} scan failed", True)
+            print(f'WARING:The node:{self.node_name} does not exist, please respecify the node')
+            logger.write_to_log('WARNING',
+                                f'The node:{self.node_name} does not exist,'
+                                f'PVC:{self.claimname} scan failed', True)
             sys.exit()
 
     def scan_directory(self, remove):
