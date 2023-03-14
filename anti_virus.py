@@ -26,6 +26,7 @@ class InputParser(object):
                                '--nodeName',
                                dest='nodeName',
                                required=True,
+                               help='Specifies the node to run the application',
                                action='store')
         self.scan.add_argument('-f',
                                '--filepath',
