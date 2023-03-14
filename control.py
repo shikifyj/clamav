@@ -35,7 +35,7 @@ class AntiVirus(object):
                      'metadata': {'name': 'clamav3'},
                      'spec': {'nodeName': '',
                               'containers': [{'name': 'clamav3',
-                                              'image': 'feixite/clamav:2.0',
+                                              'image': 'feixitek/clamav:2.0',
                                               'ports': [{'containerPort': 9009}],
                                               'volumeMounts': [{'name': 'logs-volume',
                                                                 'mountPath': '/mnt'},
