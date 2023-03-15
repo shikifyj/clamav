@@ -75,25 +75,27 @@ class AntiVirus(object):
             pod_status = action.create_pod(f'{self.filename}.yaml')
             logger.write_to_log("INFO", f"Create pod: clamb-{self.claimname}")
             time.sleep(2)
-            result = action.check_pod(f'clamb-{self.claimname}')
             if 'created' in pod_status:
                 max_time = time.time() + 30
                 print(f'Check Pod: clamb-{self.claimname} status')
                 while time.time() < max_time:
+                    result = action.check_pod(f'clamb-{self.claimname}')
                     status = re.findall(fr'clamb-{self.claimname}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
                     if status[0] == 'Running':
+                        print(f'clamb-{self.claimname} is Running')
+                        node = re.findall(r'\.[0-9]+\s+([\w]+)\s', result)
+                        print(f"Pod:clamb-{self.claimname} run on {node[0]}")
+                        logger.write_to_log("INFO", f"Pod:clamb-{self.claimname} run on {node[0]}")
                         break
                 else:
+                    result = action.check_pod(f'clamb-{self.claimname}')
+                    status = re.findall(fr'clamb-{self.claimname}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
                     action.delete_docker(f'clamb-{self.claimname}')
                     print(f'WARNING:Pod:clamb-{self.claimname} status is {status[0]},{self.claimname} stop to scan')
                     logger.write_to_log('WARNING',
                                         f'Because Pod:clamb-{self.claimname} status is {status[0]},'
                                         f'PVC:{self.claimname} scan failed', True)
                     sys.exit()
-                node = re.findall(r'\.[0-9]+\s+([\w]+)\s', result)
-                print(f"Pod:clamb-{self.claimname} run on {node[0]}")
-                logger.write_to_log("INFO", f"Pod:clamb-{self.claimname} run on {node[0]}")
-                print(f'clamb-{self.claimname} is Running')
                 pod_id = action.get_pid(f'clamb-{self.claimname}')
                 logger.write_to_log('INFO',
                                     f'[{pod_id}]clamb-{self.claimname} is Running, containerID is [{pod_id}]')
