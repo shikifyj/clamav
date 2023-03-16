@@ -37,8 +37,9 @@ def delete_docker(pod_name):
 def get_pid(pod_name):
     cmd = f'kubectl get pod {pod_name} -o yaml | grep containerID'
     result = utils.exec_cmd(cmd)
-    pid = re.search(r'[0-9A-Za-z]+(?:\s+|$)', result)
-    return pid.group().strip()
+    # pid = re.search(r'[0-9A-Za-z]+(?:\s+|$)', result)
+    pid = result[26:]
+    return pid
 
 
 def delete_yaml(file_name):

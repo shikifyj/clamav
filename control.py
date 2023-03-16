@@ -175,10 +175,10 @@ class AntiVirus(object):
                     result = action.check_pod(f'{pod_name}')
                     status = re.findall(fr'{pod_name}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
                     action.delete_docker(f'{pod_name}')
-                    print(f'WARNING:Pod:{pod_name}的状态是"{status[0]}",{self.filename}扫描失败')
+                    print(f'WARNING:Pod:{pod_name}的状态是"{status[0]}",{self.filepath}扫描失败')
                     logger.write_to_log('WARNING',
-                                        f'由于Pod:clamb-{self.filename}的状态是"{status[0]}",'
-                                        f'{self.filename}扫描失败', True)
+                                        f'由于Pod:clamb-{self.filepath}的状态是"{status[0]}",'
+                                        f'{self.filepath}扫描失败', True)
                     sys.exit()
                 self.pod_name_list.append(f'{pod_name}')
                 self.scan_directory_list.append(f'/scan')
@@ -186,13 +186,13 @@ class AntiVirus(object):
             else:
                 print(f'WARING:Pod:{pod_name}创建失败')
                 logger.write_to_log("WARING", f"由于Pod:{pod_name}创建失败,"
-                                              f"{self.filename}扫描失败", True)
+                                              f"{self.filepath}扫描失败", True)
                 sys.exit()
         else:
             print(f'WARING:节点:{self.node_name}不存在,请重新选择节点运行杀毒程序')
             logger.write_to_log('WARNING',
                                 f'节点:{self.node_name}不存在,'
-                                f'{self.filename}扫描失败', True)
+                                f'{self.filepath}扫描失败', True)
             sys.exit()
 
     def scan_directory(self, remove):
@@ -294,9 +294,9 @@ class AntiVirus(object):
             print('----------------------------------------------------------------------------------------')
         for i in range(len(file_list)):
             if i >= 0 and remove == ' --remove':
-                files = re.findall(r'/scan.*:', file_list[i])[0].strip(':').replace('/scan', '')
+                files = re.findall(r'/scan.*:', file_list[i])[0].strip(':').replace('/scan', '').strip('/')
                 print(f'删除感染文件:{files}')
-                logger.write_to_log('INFO', f"[{pod_id}]删除感染文件:{files}", True)
+                logger.write_to_log('INFO', f"[{pod_id}]删除感染文件:{files.s}", True)
                 print(f'{files}成功删除')
                 logger.write_to_log('INFO', f'[{pod_id}]{files}成功删除', True)
         # print(f'Delete Pod:{self.pod_name_list[0]}')
