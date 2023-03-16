@@ -228,7 +228,7 @@ def update_yaml(file_path, yaml_dict):
 
 class Table(object):
     def __init__(self):
-        self.header = ['file', 'Virus type']
+        self.header = ['病毒文件', '病毒类型']
         self.table = prettytable.PrettyTable()
 
     def add_data(self, list_data):
