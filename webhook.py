@@ -6,7 +6,7 @@ import time
 import urllib3
 import urllib3.exceptions
 
-url = 'https://kube-auditing-webhook-svc.kubesphere-logging-system.svc:6443/audit/webhook/event'
+url = ' https://10.203.1.11:30635/audit/webhook/event '
 
 
 def wh_interface(Time, Workspace, Reason, AuditResType, ResName, SourceIPs, LogLevel):

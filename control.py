@@ -77,7 +77,7 @@ class AntiVirus(object):
             time.sleep(2)
             if 'created' in pod_status:
                 max_time = time.time() + 30
-                print(f'检查Pod: clamb-{self.claimname}的状态')
+                print(f'检查Pod:clamb-{self.claimname}的状态')
                 while time.time() < max_time:
                     result = action.check_pod(f'clamb-{self.claimname}')
                     status = re.findall(fr'clamb-{self.claimname}+\s*\d*/\d*\s*([a-zA-Z]*)\s', result)
@@ -198,11 +198,11 @@ class AntiVirus(object):
     def scan_directory(self, remove):
         if self.claimname == None:
             pod_id = action.get_pid(f'clamb-{self.filepath}'.replace('/', '-'))
-            print(f'扫描{self.filepath} ')
+            print(f'正在扫描{self.filepath} ')
             logger.write_to_log("INFO", f'[{pod_id}]扫描{self.filepath}', True)
         else:
             pod_id = action.get_pid(f'clamb-{self.claimname}')
-            print(f'扫描PVC:{self.claimname} ')
+            print(f'正在扫描PVC:{self.claimname} ')
             logger.write_to_log("INFO", f'[{pod_id}]扫描PVC:{self.claimname}', True)
         result = action.scanning(pod_name=self.pod_name_list[0],
                                  container_name=self.container_name_list[0],
