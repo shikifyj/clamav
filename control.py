@@ -197,7 +197,7 @@ class AntiVirus(object):
 
     def scan_directory(self, remove):
         if self.claimname == None:
-            pod_id = action.get_pid(f'clamb-{self.filepath}'.replace('/', '-'))
+            pod_id = action.get_pid(f'clamb{self.filepath}'.replace('/', '-'))
             print(f'正在扫描{self.filepath} ')
             logger.write_to_log("INFO", f'[{pod_id}]扫描{self.filepath}', True)
         else:
@@ -296,7 +296,7 @@ class AntiVirus(object):
             if i >= 0 and remove == ' --remove':
                 files = re.findall(r'/scan.*:', file_list[i])[0].strip(':').replace('/scan', '').strip('/')
                 print(f'删除感染文件:{files}')
-                logger.write_to_log('INFO', f"[{pod_id}]删除感染文件:{files.s}", True)
+                logger.write_to_log('INFO', f"[{pod_id}]删除感染文件:{files}", True)
                 print(f'{files}成功删除')
                 logger.write_to_log('INFO', f'[{pod_id}]{files}成功删除', True)
         # print(f'Delete Pod:{self.pod_name_list[0]}')

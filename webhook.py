@@ -6,8 +6,7 @@ import time
 import urllib3
 import urllib3.exceptions
 
-url = ' https://10.203.1.11:30635/audit/webhook/event '
-
+url = 'https://10.203.1.11:30635/audit/webhook/event'
 
 def wh_interface(Time, Workspace, Reason, AuditResType, ResName, SourceIPs, LogLevel):
     # print('webhokk info from bmcprogram',Time,Workspace,Reason,AuditResType,ResName,SourceIPs,LogLevel)
