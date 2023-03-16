@@ -10,7 +10,7 @@ logger = utils.Log()
 class InputParser(object):
 
     def __init__(self):
-        self.parser = argparse.ArgumentParser(description="Antivirus tools")
+        self.parser = argparse.ArgumentParser(description="杀毒工具")
         self.setup_parser()
         self.conf_args = {}
 
@@ -21,27 +21,27 @@ class InputParser(object):
                                  dest='version',
                                  help='Show current version',
                                  action='store_true')
-        self.scan = subp.add_parser("virus_scan", aliases=['v'], help="Scan virus")
+        self.scan = subp.add_parser("virus_scan", aliases=['v'], help="扫描病毒功能")
         self.scan.add_argument('-n',
                                '--nodeName',
                                dest='nodeName',
                                required=True,
-                               help='Specifies the node to run the application',
+                               help='选择运行杀毒程序的节点',
                                action='store')
         self.scan.add_argument('-f',
                                '--filepath',
                                dest='filepath',
-                               help='Scan the directory',
+                               help='扫描目录或者文件',
                                action='store')
         self.scan.add_argument('-p',
                                '--volumes',
                                dest='volumes',
-                               help='Scan the PVC',
+                               help='扫描PVC',
                                action='store')
         self.scan.add_argument('-r',
                                '--remove',
                                dest='remove',
-                               help='Remove infected files',
+                               help='删除感染文件',
                                action='store_true')
         self.scan.set_defaults(func=self.scan_func)
         self.parser.set_defaults(func=self.help_usage)
